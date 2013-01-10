@@ -18,6 +18,7 @@
  */
 
 #include "orientationsensor.h"
+#include "orientationsensor_p.h"
 
 IMPLEMENT_READING(OrientationSensorReading);
 

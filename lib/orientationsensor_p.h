@@ -20,16 +20,12 @@
 #ifndef ORIENTATIONSENSOR_P_H
 #define ORIENTATIONSENSOR_P_H
 
-#include <QDebug>
-
 class OrientationSensorReadingPrivate
 {
 public:
     OrientationSensorReadingPrivate()
     {
-        qDebug() << __PRETTY_FUNCTION__ << endl;
     }
-
 };
 
 #endif

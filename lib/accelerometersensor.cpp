@@ -18,6 +18,7 @@
  */
 
 #include "accelerometersensor.h"
+#include "accelerometersensor_p.h"
 
 IMPLEMENT_READING(AccelerometerSensorReading);
 

@@ -17,15 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACCELEROMETERSENSOR_P_H
-#define ACCELEROMETERSENSOR_P_H
+#ifndef ACCELEROMETERIMPL_H
+#define ACCELEROMETERIMPL_H
 
-class AccelerometerSensorReadingPrivate
+#include "common.h"
+
+#include <qsensorbackend.h>
+
+class AccelerometerSensorImpl : public QSensorBackend
 {
+    Q_OBJECT
+
 public:
-    AccelerometerSensorReadingPrivate()
-    {
-    }
+    static char const * const id;
+
+    AccelerometerSensorImpl(QSensor *sensor = NULL);
+    virtual ~AccelerometerSensorImpl();
+
+    void start();
+    void stop();
+
+Q_SIGNALS:
+    void readingChanged();
+
+public Q_SLOTS:
+    void onAccelerometerReadingChanged();
+
+private:
+    AccelerometerCommon *m_accelCommon;
+    QAccelerometerReading m_reading;
 };
 
 #endif
