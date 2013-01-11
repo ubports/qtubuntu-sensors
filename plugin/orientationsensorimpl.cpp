@@ -68,8 +68,6 @@ void OrientationSensorImpl::onAccelerometerReadingChanged()
     const QAccelerometerReading *reading = m_accelCommon->reading();
     Q_ASSERT(reading != NULL);
 
-    m_reading.setTimestamp(AccelerometerCommon::getTimeStamp());
-
     // Interpret the accelerometer data into a meaningful orientation
     if (reading->y() > m_accelDelta)
         m_reading.setOrientation(QOrientationReading::TopUp);

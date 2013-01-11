@@ -38,8 +38,6 @@ public:
 
     QAccelerometerReading *reading() const;
 
-    static qint64 getTimeStamp();
-
     static void onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context);
 
 Q_SIGNALS:

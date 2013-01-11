@@ -20,7 +20,6 @@
 #include "common.h"
 
 #include <QDebug>
-#include <QDateTime>
 
 AccelerometerCommon::AccelerometerCommon(QObject *parent)
     : QObject(parent),
@@ -51,11 +50,6 @@ QAccelerometerReading *AccelerometerCommon::reading() const
     return m_reading;
 }
 
-qint64 AccelerometerCommon::getTimeStamp()
-{
-    return QDateTime::currentMSecsSinceEpoch();
-}
-
 void AccelerometerCommon::onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context)
 {
     AccelerometerCommon *ac = static_cast<AccelerometerCommon *>(context);
@@ -71,6 +65,9 @@ void AccelerometerCommon::onAccelerometerReading(ubuntu_sensor_accelerometer_rea
     m_reading->setX(reading->acceleration_x);
     m_reading->setY(reading->acceleration_y);
     m_reading->setZ(reading->acceleration_z);
+
+    // Set the timestamp as set by the hybris layer
+    m_reading->setTimestamp(reading->timestamp);
 
     Q_EMIT accelerometerReadingChanged();
 }

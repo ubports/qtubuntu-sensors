@@ -61,24 +61,15 @@ void AccelerometerSensorImpl::stop()
 
 void AccelerometerSensorImpl::onAccelerometerReadingChanged()
 {
-    qDebug() << __PRETTY_FUNCTION__ << endl;
-
     Q_ASSERT(m_accelCommon != NULL);
 
     const QAccelerometerReading *reading = m_accelCommon->reading();
     Q_ASSERT(reading != NULL);
 
-    // Timestamp the current reading
-    m_reading.setTimestamp(AccelerometerCommon::getTimeStamp());
-
     // Capture the coordinates from the accelerometer device
     m_reading.setX(reading->x());
     m_reading.setY(reading->y());
     m_reading.setZ(reading->z());
-
-    //qDebug() << "X: " << m_reading->x() << endl;
-    //qDebug() << "Y: " << m_reading->y() << endl;
-    //qDebug() << "Z: " << m_reading->z() << endl;
 
     newReadingAvailable();
 }
