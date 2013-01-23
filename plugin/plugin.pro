@@ -1,4 +1,6 @@
 include(../coverage.pri)
+include(../aalsensor-plugins.pro)
+
 TEMPLATE = lib
 CONFIG += plugin
 TARGET = $$qtLibraryTarget(qtsensors_aal)
@@ -6,9 +8,12 @@ PLUGIN_TYPE = sensors
 
 QT = sensors core
 
+message("UBUNTU_APP_API_INCLUDEPATH =" $$UBUNTU_APP_API_INCLUDEPATH)
 INCLUDEPATH += $$PWD/../lib \
-    /usr/include/hybris
-LIBS += -L$$OUT_PWD/../lib -laalsensors -lhybris_ics -lubuntu_application_api
+    $$UBUNTU_APP_API_INCLUDEPATH
+
+LIBS += -L$$OUT_PWD/../lib -laalsensors
+LIBS += -L$$UBUNTU_APP_API_LIBPATH -lubuntu_application_api
 
 HEADERS += \
     common.h \
