@@ -1,6 +1,6 @@
 include(../coverage.pri)
 TEMPLATE = lib
-TARGET = qtubuntu-sensors
+TARGET = qtubuntu_sensors
 
 QT = core sensors
 
