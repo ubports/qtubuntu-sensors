@@ -39,10 +39,12 @@ AccelerometerCommon::~AccelerometerCommon()
 void AccelerometerCommon::start()
 {
     ubuntu_sensor_install_observer(&m_observer);
+    ubuntu_sensor_enable_sensor(ubuntu_sensor_type_accelerometer);
 }
 
 void AccelerometerCommon::stop()
 {
+    ubuntu_sensor_disable_sensor(ubuntu_sensor_type_accelerometer);
 }
 
 QAccelerometerReading *AccelerometerCommon::reading() const
