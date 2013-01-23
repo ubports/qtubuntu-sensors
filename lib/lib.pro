@@ -12,5 +12,5 @@ HEADERS += orientationsensor.h \
 SOURCES += orientationsensor.cpp \
     accelerometersensor.cpp
 
-target.path = $$[QT_INSTALL_EXAMPLES]/qtsensors/aal
+target.path = $$[QT_INSTALL_LIBS]
 INSTALLS += target

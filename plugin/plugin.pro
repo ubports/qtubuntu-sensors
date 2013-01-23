@@ -21,7 +21,7 @@ SOURCES += \
     accelerometersensorimpl.cpp \
     main.cpp
 
-target.path += $$[QT_INSTALL_EXAMPLES]/qtsensors/aal/$$PLUGIN_TYPE
+target.path += $$[QT_INSTALL_PLUGINS]/sensors
 INSTALLS += target
 
 OTHER_FILES += plugin.json
