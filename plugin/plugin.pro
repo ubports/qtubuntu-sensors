@@ -1,18 +1,17 @@
 include(../coverage.pri)
-include(../aalsensor-plugins.pro)
+include(../qtubuntu-sensors.pro)
 
 TEMPLATE = lib
 CONFIG += plugin
-TARGET = $$qtLibraryTarget(qtsensors_aal)
+TARGET = $$qtLibraryTarget(qtubuntu-sensors-plugins)
 PLUGIN_TYPE = sensors
 
 QT = sensors core
 
-message("UBUNTU_APP_API_INCLUDEPATH =" $$UBUNTU_APP_API_INCLUDEPATH)
 INCLUDEPATH += $$PWD/../lib \
     $$UBUNTU_APP_API_INCLUDEPATH
 
-LIBS += -L$$OUT_PWD/../lib -laalsensors
+LIBS += -L$$OUT_PWD/../lib -lqtubuntu-sensors
 LIBS += -L$$UBUNTU_APP_API_LIBPATH -lubuntu_application_api
 
 HEADERS += \
