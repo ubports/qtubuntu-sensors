@@ -1,0 +1,5 @@
+qtsensors-aal (0.1) quantal; urgency=low
+
+  * Initial release with a debian package.
+
+ -- Jim Hodapp <jim.hodapp@canonical.com>  Wed, 23 Jan 2013 13:49:24 -0500
