@@ -1,4 +1,4 @@
-qtsensors-aal (0.1) quantal; urgency=low
+qtubuntu-sensors (0.1) quantal; urgency=low
 
   * Initial release with a debian package.
 

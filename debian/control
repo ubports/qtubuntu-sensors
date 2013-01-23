@@ -1,4 +1,4 @@
-Source: qtsensors-aal
+Source: qtubuntu-sensors
 Section: libs
 Priority: extra
 Maintainer: Jim Hodapp <jim.hodapp@canonical.com>
@@ -8,11 +8,11 @@ Build-Depends:  debhelper (>= 9),
                 pkg-config
 Standards-Version: 3.9.3
 
-Package: qtsensors-aal
+Package: qtubuntu-sensors
 Section: libs
 Architecture: armhf
 Depends:    ${shlibs:Depends},
             ${misc:Depends},
             qtsensors,
 Description: QtSensors plugins for AAL+
- QtSensors plugins for the hybris sensors backend
+ QtSensors plugins for the qtubuntu (hybris) sensors backend
