@@ -25,6 +25,7 @@ AccelerometerCommon::AccelerometerCommon(QObject *parent)
     : QObject(parent),
       m_reading(new QAccelerometerReading)
 {
+    ubuntu_sensor_initialize_observer(&m_observer);
     m_observer.on_new_accelerometer_reading_cb = AccelerometerCommon::onAccelerometerReadingCb;
     m_observer.context = static_cast<void *>(this);
 }
