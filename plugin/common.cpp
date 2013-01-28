@@ -64,6 +64,14 @@ void AccelerometerCommon::onAccelerometerReading(ubuntu_sensor_accelerometer_rea
 {
     Q_ASSERT(reading != NULL);
 
+    // Check for duplicate values to avoid unnecessary signal emission
+    if (m_reading->x() == reading->acceleration_x &&
+        m_reading->y() == reading->acceleration_y &&
+        m_reading->z() == reading->acceleration_z)
+    {
+        return;
+    }
+
     // Capture the coordinates from the accelerometer device
     m_reading->setX(reading->acceleration_x);
     m_reading->setY(reading->acceleration_y);
