@@ -1,9 +1,11 @@
 qtubuntu-sensors (0.2) quantal; urgency=low
 
-  * Only emit the accelerometer and orientation sensor change signals if the
-    values change.
+  [Jim Hodapp]
+  * Only emit the accelerometer and orientation sensor change signals if the value change.
+  [Bill Filler]
+  * debian/control: added qtbase5-dev as build-dep 
 
- -- Jim Hodapp <jim.hodapp@canonical.com>  Mon, 28 Jan 2013 17:59:40 -0500
+ -- Bill Filler <bill.filler@canonical.com>  Mon, 28 Jan 2013 15:50:48 -0500
 
 qtubuntu-sensors (0.1) quantal; urgency=low
 

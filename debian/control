@@ -6,6 +6,7 @@ Build-Depends:  debhelper (>= 9),
                 libhybris-dev,
                 qtsensors5-dev,
                 qt5-default,
+		qtbase5-dev,
                 pkg-config
 Standards-Version: 3.9.3
 
