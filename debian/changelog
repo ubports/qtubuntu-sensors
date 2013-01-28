@@ -2,4 +2,4 @@ qtubuntu-sensors (0.1) quantal; urgency=low
 
   * Initial release with a debian package.
 
- -- Jim Hodapp (Canonical OpenPGP Key) <jim.hodapp@canonical.com> Wed, 23 Jan 2013 13:49:24 -0500
+ -- Bill Filler <bill.filler@canonical.com>  Wed, 23 Jan 2013 13:49:24 -0500
