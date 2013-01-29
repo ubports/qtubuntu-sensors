@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.3) quantal; urgency=low
+
+  * release latest
+
+ -- Bill Filler <bill.filler@canonical.com>  Tue, 29 Jan 2013 11:21:47 -0500
+
 qtubuntu-sensors (0.2) quantal; urgency=low
 
   [Jim Hodapp]
