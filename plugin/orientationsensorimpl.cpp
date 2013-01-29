@@ -82,6 +82,11 @@ void OrientationSensorImpl::onAccelerometerReadingChanged()
     else if (reading->z() < -m_accelDelta)
         m_reading.setOrientation(QOrientationReading::FaceDown);
 
-    // Emit readingChanged signal
-    newReadingAvailable();
+    if (m_reading.orientation() != m_readingCache.orientation())
+    {
+        // Emit readingChanged signal only if orientation actually changes
+        newReadingAvailable();
+    }
+
+    m_readingCache.setOrientation(m_reading.orientation());
 }

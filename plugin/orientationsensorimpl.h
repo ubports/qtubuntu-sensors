@@ -51,6 +51,7 @@ private:
 
     AccelerometerCommon *m_accelCommon;
     QOrientationReading m_reading;
+    QOrientationReading m_readingCache;
 };
 
 #endif
