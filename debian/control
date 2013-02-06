@@ -1,19 +1,21 @@
 Source: qtubuntu-sensors
 Section: libs
 Priority: extra
-Maintainer: Jim Hodapp <jim.hodapp@canonical.com>
-Build-Depends:  debhelper (>= 9),
-                libhybris-dev,
-                qtsensors5-dev,
-                qt5-default,
-		qtbase5-dev,
-                pkg-config
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: debhelper (>= 9),
+               libubuntu-platform-api1-dev,
+               qtsensors5-dev,
+               qt5-default,
+               qtbase5-dev,
+               pkg-config
 Standards-Version: 3.9.3
+Vcs-Bzr: lp:~rocket-scientists/aal+/qtubuntu-sensors
+Vcs-Browser: https://bazaar.launchpad.net/~rocket-scientists/aal+/qtubuntu-sensors/files
 
 Package: qtubuntu-sensors
 Section: libs
 Architecture: armhf
-Depends:    ${shlibs:Depends},
-            ${misc:Depends},
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
 Description: QtSensors plugins for AAL+
  QtSensors plugins for the qtubuntu (hybris) sensors backend

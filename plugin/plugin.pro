@@ -8,11 +8,10 @@ PLUGIN_TYPE = sensors
 
 QT = sensors core
 
-INCLUDEPATH += $$PWD/../lib \
-    $$UBUNTU_APP_API_INCLUDEPATH
+INCLUDEPATH += $$PWD/../lib
 
 LIBS += -L$$OUT_PWD/../lib -lqtubuntu_sensors
-LIBS += -L$$UBUNTU_APP_API_LIBPATH -lubuntu_application_api
+LIBS += -lubuntu_application_api
 
 HEADERS += \
     common.h \
