@@ -1,10 +1,10 @@
 Format: http://dep.debian.net/deps/dep5
 Upstream-Name: ubuntu-session
-Source: https://code.launchpad.net/~rocket-scientists/aal+/qtsensors-aal
+Source: lp:qtubuntu-sensors
 
 Files: *
-Copyright: 2012 Canonical Ltd
-License: GPL-3.0+
+Copyright: 2013 Canonical Ltd
+License: LGPL-3.0+
 
 Files: debian/*
 Copyright: 2013 Canonical Ltd
