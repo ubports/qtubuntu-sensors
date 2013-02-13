@@ -9,13 +9,13 @@ Build-Depends: debhelper (>= 9),
                qtbase5-dev,
                pkg-config
 Standards-Version: 3.9.3
-Vcs-Bzr: lp:~rocket-scientists/aal+/qtubuntu-sensors
-Vcs-Browser: https://bazaar.launchpad.net/~rocket-scientists/aal+/qtubuntu-sensors/files
+Vcs-Bzr: lp:qtubuntu-sensors
+Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
 Package: qtubuntu-sensors
 Section: libs
 Architecture: armhf
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-Description: QtSensors plugins for AAL+
+Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend

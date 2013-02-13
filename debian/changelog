@@ -1,4 +1,4 @@
-qtubuntu-sensors (0.4) quantal; urgency=low
+qtubuntu-sensors (0.4-0ubuntu1) quantal; urgency=low
 
   * Updating build-dependency to use the new ubuntu-platform-api package
   * debian/control: updating entries to be compatible with Ubuntu standards
