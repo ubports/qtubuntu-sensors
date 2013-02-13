@@ -17,5 +17,5 @@ Section: libs
 Architecture: armhf
 Depends: ${shlibs:Depends},
          ${misc:Depends},
-Description: QtSensors plugins for AAL+
+Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend
