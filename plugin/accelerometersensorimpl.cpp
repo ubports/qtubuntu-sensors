@@ -28,11 +28,18 @@ AccelerometerSensorImpl::AccelerometerSensorImpl(QSensor *sensor)
     // Register the reading instance with the parent
     setReading<QAccelerometerReading>(&m_reading);
 
+    const qreal minDelay = m_accelCommon->getMinDelay();
+    if (minDelay > -1)
+    {
+        // Min and max sensor sampling frequencies, in Hz
+        addDataRate(minDelay, minDelay * 10);
+    }
+    addOutputRange(m_accelCommon->getMinValue(),
+                   m_accelCommon->getMaxValue(),
+                   m_accelCommon->getResolution());
+
     // Connect to the accelerometer's readingChanged signal
     connect(m_accelCommon, SIGNAL(accelerometerReadingChanged()), this, SLOT(onAccelerometerReadingChanged()));
-
-    // TODO: add to hybris wrapper, then enable here:
-    //addDataRate(100, 100); // 100Hz
 
     setDescription(QLatin1String("Accelerometer Sensor"));
 }

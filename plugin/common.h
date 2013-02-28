@@ -35,6 +35,11 @@ public:
 
     QAccelerometerReading *reading() const;
 
+    qreal getMinDelay() const;
+    qreal getMinValue() const;
+    qreal getMaxValue() const;
+    qreal getResolution() const;
+
     static void onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context);
 
 Q_SIGNALS:
@@ -43,6 +48,10 @@ Q_SIGNALS:
 private:
     ubuntu_sensor_observer m_observer;
     QAccelerometerReading *m_reading;
+    qreal m_minDelay;
+    qreal m_minValue;
+    qreal m_maxValue;
+    qreal m_resolution;
 
     // Gets called by the Aal sensor wrapper when there is a new accelerometer reading
     void onAccelerometerReading(ubuntu_sensor_accelerometer_reading *reading);
