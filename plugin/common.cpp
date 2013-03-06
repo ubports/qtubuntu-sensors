@@ -20,11 +20,22 @@
 
 AccelerometerCommon::AccelerometerCommon(QObject *parent)
     : QObject(parent),
-      m_reading(new QAccelerometerReading)
+      m_reading(new QAccelerometerReading),
+      m_minDelay(-1),
+      m_minValue(0.0),
+      m_maxValue(0.0),
+      m_resolution(0.0)
 {
     ubuntu_sensor_initialize_observer(&m_observer);
     m_observer.on_new_accelerometer_reading_cb = AccelerometerCommon::onAccelerometerReadingCb;
     m_observer.context = static_cast<void *>(this);
+    ubuntu_sensor_install_observer(&m_observer);
+
+    // Get the minimum sensor reading delay
+    m_minDelay = static_cast<qreal>(ubuntu_sensor_get_sensor_min_delay(ubuntu_sensor_type_accelerometer));
+    m_minValue = static_cast<qreal>(ubuntu_sensor_get_sensor_min_value(ubuntu_sensor_type_accelerometer));
+    m_maxValue = static_cast<qreal>(ubuntu_sensor_get_sensor_max_value(ubuntu_sensor_type_accelerometer));
+    m_resolution = static_cast<qreal>(ubuntu_sensor_get_sensor_resolution(ubuntu_sensor_type_accelerometer));
 }
 
 AccelerometerCommon::~AccelerometerCommon()
@@ -36,7 +47,6 @@ AccelerometerCommon::~AccelerometerCommon()
 
 void AccelerometerCommon::start()
 {
-    ubuntu_sensor_install_observer(&m_observer);
     ubuntu_sensor_enable_sensor(ubuntu_sensor_type_accelerometer);
 }
 
@@ -48,6 +58,26 @@ void AccelerometerCommon::stop()
 QAccelerometerReading *AccelerometerCommon::reading() const
 {
     return m_reading;
+}
+
+qreal AccelerometerCommon::getMinDelay() const
+{
+    return m_minDelay;
+}
+
+qreal AccelerometerCommon::getMinValue() const
+{
+    return m_minValue;
+}
+
+qreal AccelerometerCommon::getMaxValue() const
+{
+    return m_maxValue;
+}
+
+qreal AccelerometerCommon::getResolution() const
+{
+    return m_resolution;
 }
 
 void AccelerometerCommon::onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context)
