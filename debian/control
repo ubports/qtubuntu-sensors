@@ -7,13 +7,17 @@ Build-Depends: debhelper (>= 9),
                pkg-config,
                qt5-default,
                qtbase5-dev,
-               qtsensors5-dev
+               qtsensors5-dev,
 Standards-Version: 3.9.4
+Homepage: https://launchpad.net/qtubuntu-sensors
+# If you aren't a member of http://pad.lv/~phablet-team but need to upload packaging changes,
+# just go ahead.  http://pad.lv/~phablet-team will notice and sync up the code again.
 Vcs-Bzr: lp:qtubuntu-sensors
 Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
 Package: qtubuntu-sensors
 Architecture: armhf
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
 Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend

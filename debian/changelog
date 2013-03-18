@@ -1,6 +1,6 @@
-qtubuntu-sensors (0.5.1-0ubuntu1) raring; urgency=low
+qtubuntu-sensors (0.5.1-0ubuntu1) UNRELEASED; urgency=low
 
-  * Prepare for daily auto-landing.
+  * Automatic snapshot from revision 21 (bootstrap):
 
  -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Mon, 18 Mar 2013 10:01:04 +0000
 
