@@ -16,7 +16,7 @@ Vcs-Bzr: lp:qtubuntu-sensors
 Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
 Package: qtubuntu-sensors
-Architecture: armhf
+Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: QtSensors plugins for Android sensors
