@@ -1,21 +1,19 @@
 Source: qtubuntu-sensors
 Section: libs
-Priority: extra
+Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
                libubuntu-platform-api1-dev,
-               qtsensors5-dev,
+               pkg-config,
                qt5-default,
                qtbase5-dev,
-               pkg-config
-Standards-Version: 3.9.3
+               qtsensors5-dev
+Standards-Version: 3.9.4
 Vcs-Bzr: lp:qtubuntu-sensors
 Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
 Package: qtubuntu-sensors
-Section: libs
 Architecture: armhf
-Depends: ${shlibs:Depends},
-         ${misc:Depends},
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend
