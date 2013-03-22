@@ -1,6 +1,6 @@
 qtubuntu-sensors (0.5.1-0ubuntu1) UNRELEASED; urgency=low
 
-  * Automatic snapshot from revision 21 (bootstrap):
+  * Packaging cleanup in preparation for daily landing.
 
  -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Mon, 18 Mar 2013 10:01:04 +0000
 
