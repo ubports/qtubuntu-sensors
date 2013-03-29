@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.5.1-0ubuntu1) UNRELEASED; urgency=low
+
+  * Packaging cleanup in preparation for daily landing.
+
+ -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Mon, 18 Mar 2013 10:01:04 +0000
+
 qtubuntu-sensors (0.5-0ubuntu1) quantal; urgency=low
 
   * Bumping package version number for a release.
