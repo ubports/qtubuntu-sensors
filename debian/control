@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
-               libubuntu-platform-api1-dev,
+               libplatform-api1-dev,
                pkg-config,
                qt5-default,
                qtbase5-dev,
