@@ -1,4 +1,4 @@
-qtubuntu-sensors (0.5.1-0ubuntu1) UNRELEASED; urgency=low
+qtubuntu-sensors (0.5.1daily13.04.12ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Dmitrijs Ledkovs ]
   * Packaging cleanup in preparation for daily landing.
@@ -6,7 +6,10 @@ qtubuntu-sensors (0.5.1-0ubuntu1) UNRELEASED; urgency=low
   [ Michael Terry ]
   * Automatic snapshot from revision 21 (bootstrap)
 
- -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Mon, 18 Mar 2013 10:01:04 +0000
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 23 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 12 Apr 2013 02:01:44 +0000
 
 qtubuntu-sensors (0.5-0ubuntu1) quantal; urgency=low
 
