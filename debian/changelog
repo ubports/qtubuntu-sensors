@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.5.1daily13.04.16ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  * Automatic snapshot from revision 25 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Apr 2013 06:33:56 +0000
+
 qtubuntu-sensors (0.5.1daily13.04.12ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Dmitrijs Ledkovs ]
