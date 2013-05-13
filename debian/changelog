@@ -1,3 +1,16 @@
+qtubuntu-sensors (0.5.1daily13.05.13ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Timo Jyrinki ]
+  * qtubuntu-sensors doesn't identify with a newer qtsensors snapshot
+    (LP: #1178554)
+  * AalSensorPlugin QtSensors plugin loading is broken with Qt 5.0.2
+    deployment (LP: #1178401)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 27 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 13 May 2013 02:01:06 +0000
+
 qtubuntu-sensors (0.5.1daily13.04.16ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   * Automatic snapshot from revision 25 (ubuntu-unity/next)
