@@ -1,3 +1,10 @@
+qtubuntu-sensors (0.6-0ubuntu1) raring; urgency=low
+
+  * Making an official new upstream release, so we can start using just the
+    package available via the daily release process
+
+ -- Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>  Thu, 30 May 2013 14:35:25 -0300
+
 qtubuntu-sensors (0.5.1daily13.05.30ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Ricardo Mendoza ]
