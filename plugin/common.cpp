@@ -26,16 +26,19 @@ AccelerometerCommon::AccelerometerCommon(QObject *parent)
       m_maxValue(0.0),
       m_resolution(0.0)
 {
-    ubuntu_sensor_initialize_observer(&m_observer);
-    m_observer.on_new_accelerometer_reading_cb = AccelerometerCommon::onAccelerometerReadingCb;
-    m_observer.context = static_cast<void *>(this);
-    ubuntu_sensor_install_observer(&m_observer);
+    m_accelerometer = ua_sensors_accelerometer_new();
 
+    ua_sensors_accelerometer_set_reading_cb(
+        m_accelerometer,
+        AccelerometerCommon::onAccelerometerReadingCb,
+        static_cast<void *>(this)
+        );
+    
     // Get the minimum sensor reading delay
-    m_minDelay = static_cast<qreal>(ubuntu_sensor_get_sensor_min_delay(ubuntu_sensor_type_accelerometer));
-    m_minValue = static_cast<qreal>(ubuntu_sensor_get_sensor_min_value(ubuntu_sensor_type_accelerometer));
-    m_maxValue = static_cast<qreal>(ubuntu_sensor_get_sensor_max_value(ubuntu_sensor_type_accelerometer));
-    m_resolution = static_cast<qreal>(ubuntu_sensor_get_sensor_resolution(ubuntu_sensor_type_accelerometer));
+    m_minDelay = static_cast<qreal>(ua_sensors_accelerometer_get_min_delay(m_accelerometer));
+    m_minValue = static_cast<qreal>(ua_sensors_accelerometer_get_min_value(m_accelerometer));
+    m_maxValue = static_cast<qreal>(ua_sensors_accelerometer_get_max_value(m_accelerometer));
+    m_resolution = static_cast<qreal>(ua_sensors_accelerometer_get_resolution(m_accelerometer));
 }
 
 AccelerometerCommon::~AccelerometerCommon()
@@ -47,12 +50,12 @@ AccelerometerCommon::~AccelerometerCommon()
 
 void AccelerometerCommon::start()
 {
-    ubuntu_sensor_enable_sensor(ubuntu_sensor_type_accelerometer);
+    ua_sensors_accelerometer_enable(m_accelerometer);
 }
 
 void AccelerometerCommon::stop()
 {
-    ubuntu_sensor_disable_sensor(ubuntu_sensor_type_accelerometer);
+    ua_sensors_accelerometer_disable(m_accelerometer);
 }
 
 QAccelerometerReading *AccelerometerCommon::reading() const
@@ -80,32 +83,36 @@ qreal AccelerometerCommon::getResolution() const
     return m_resolution;
 }
 
-void AccelerometerCommon::onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context)
+void AccelerometerCommon::onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context)
 {
     AccelerometerCommon *ac = static_cast<AccelerometerCommon *>(context);
     if (ac != NULL)
-        ac->onAccelerometerReading(reading);
+        ac->onAccelerometerReading(event);
 }
 
-void AccelerometerCommon::onAccelerometerReading(ubuntu_sensor_accelerometer_reading *reading)
+void AccelerometerCommon::onAccelerometerReading(UASAccelerometerEvent *event)
 {
-    Q_ASSERT(reading != NULL);
+    Q_ASSERT(event != NULL);
+
+    float accel_x = uas_accelerometer_event_get_acceleration_x(event);
+    float accel_y = uas_accelerometer_event_get_acceleration_y(event);
+    float accel_z = uas_accelerometer_event_get_acceleration_z(event);
 
     // Check for duplicate values to avoid unnecessary signal emission
-    if (m_reading->x() == reading->acceleration_x &&
-        m_reading->y() == reading->acceleration_y &&
-        m_reading->z() == reading->acceleration_z)
+    if (m_reading->x() == accel_x &&
+        m_reading->y() == accel_y &&
+        m_reading->z() == accel_z)
     {
         return;
     }
 
     // Capture the coordinates from the accelerometer device
-    m_reading->setX(reading->acceleration_x);
-    m_reading->setY(reading->acceleration_y);
-    m_reading->setZ(reading->acceleration_z);
+    m_reading->setX(accel_x);
+    m_reading->setY(accel_y);
+    m_reading->setZ(accel_z);
 
     // Set the timestamp as set by the hybris layer
-    m_reading->setTimestamp(reading->timestamp);
+    m_reading->setTimestamp(uas_accelerometer_event_get_timestamp(event));
 
     Q_EMIT accelerometerReadingChanged();
 }

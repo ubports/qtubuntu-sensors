@@ -17,7 +17,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <ubuntu/application/sensors/ubuntu_application_sensors.h>
+#include <ubuntu/application/sensors/accelerometer.h>
 
 #include <QAccelerometerReading>
 #include <QObject>
@@ -40,13 +40,13 @@ public:
     qreal getMaxValue() const;
     qreal getResolution() const;
 
-    static void onAccelerometerReadingCb(ubuntu_sensor_accelerometer_reading *reading, void *context);
+    static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
 
 Q_SIGNALS:
     void accelerometerReadingChanged();
 
 private:
-    ubuntu_sensor_observer m_observer;
+    UASensorsAccelerometer *m_accelerometer;
     QAccelerometerReading *m_reading;
     qreal m_minDelay;
     qreal m_minValue;
@@ -54,7 +54,7 @@ private:
     qreal m_resolution;
 
     // Gets called by the Aal sensor wrapper when there is a new accelerometer reading
-    void onAccelerometerReading(ubuntu_sensor_accelerometer_reading *reading);
+    void onAccelerometerReading(UASAccelerometerEvent *event);
 };
 
 #endif
