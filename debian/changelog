@@ -1,3 +1,13 @@
+qtubuntu-sensors (0.5.1daily13.05.30ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Ricardo Mendoza ]
+  * Update to use new sensors API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 29 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 30 May 2013 03:29:39 +0000
+
 qtubuntu-sensors (0.5.1daily13.05.13ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Timo Jyrinki ]
