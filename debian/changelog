@@ -1,3 +1,22 @@
+qtubuntu-sensors (0.6daily13.06.05-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Update Q_PLUGIN_METADATA (com.nokia -> com.qt-project) to fix plugin
+    detection with newer qtsensors snapshot. (LP: #1178401). (LP:
+    #1178401, #1178554)
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * Use a static arch list instead of any, since we don't want to build
+    for powerpc.
+
+  [ Ricardo Mendoza ]
+  * Update to use new sensors API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 32
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 05 Jun 2013 02:01:58 +0000
+
 qtubuntu-sensors (0.6daily13.05.30ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   * Automatic snapshot from revision 31 (ubuntu-unity/next)
