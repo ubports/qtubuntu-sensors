@@ -59,12 +59,6 @@ qtubuntu-sensors (0.5.1daily13.04.16ubuntu.unity.next-0ubuntu1) raring; urgency=
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Apr 2013 06:33:56 +0000
 
-qtubuntu-sensors (0.5.1daily13.04.12ubuntu.unity.next-0ubuntu2) UNRELEASED; urgency=low
-
-  * Add demangled symbols file for libqtubuntu_sensors.so.
-
- -- Dmitrijs Ledkovs <dmitrij.ledkov@ubuntu.com>  Mon, 15 Apr 2013 11:39:52 +0100
-
 qtubuntu-sensors (0.5.1daily13.04.12ubuntu.unity.next-0ubuntu1) raring; urgency=low
 
   [ Dmitrijs Ledkovs ]
