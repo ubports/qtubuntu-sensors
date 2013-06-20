@@ -1,3 +1,64 @@
+qtubuntu-sensors (0.6daily13.06.05-0ubuntu1) saucy; urgency=low
+
+  [ Timo Jyrinki ]
+  * Update Q_PLUGIN_METADATA (com.nokia -> com.qt-project) to fix plugin
+    detection with newer qtsensors snapshot. (LP: #1178401). (LP:
+    #1178401, #1178554)
+
+  [ Łukasz 'sil2100' Zemczak ]
+  * Use a static arch list instead of any, since we don't want to build
+    for powerpc.
+
+  [ Ricardo Mendoza ]
+  * Update to use new sensors API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 32
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 05 Jun 2013 02:01:58 +0000
+
+qtubuntu-sensors (0.6daily13.05.30ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  * Automatic snapshot from revision 31 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 30 May 2013 18:21:50 +0000
+
+qtubuntu-sensors (0.6-0ubuntu1) raring; urgency=low
+
+  * Making an official new upstream release, so we can start using just the
+    package available via the daily release process
+
+ -- Ricardo Salveti de Araujo <ricardo.salveti@canonical.com>  Thu, 30 May 2013 14:35:25 -0300
+
+qtubuntu-sensors (0.5.1daily13.05.30ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Ricardo Mendoza ]
+  * Update to use new sensors API.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 29 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 30 May 2013 03:29:39 +0000
+
+qtubuntu-sensors (0.5.1daily13.05.13ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  [ Timo Jyrinki ]
+  * qtubuntu-sensors doesn't identify with a newer qtsensors snapshot
+    (LP: #1178554)
+  * AalSensorPlugin QtSensors plugin loading is broken with Qt 5.0.2
+    deployment (LP: #1178401)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 27 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 13 May 2013 02:01:06 +0000
+
+qtubuntu-sensors (0.5.1daily13.04.16ubuntu.unity.next-0ubuntu1) raring; urgency=low
+
+  * Automatic snapshot from revision 25 (ubuntu-unity/next)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 16 Apr 2013 06:33:56 +0000
+
 qtubuntu-sensors (0.5.1daily13.04.12ubuntu.unity.next-0ubuntu2) UNRELEASED; urgency=low
 
   * Add demangled symbols file for libqtubuntu_sensors.so.
