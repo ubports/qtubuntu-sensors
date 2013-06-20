@@ -1,0 +1,39 @@
+libqtubuntu_sensors.so.1 qtubuntu-sensors #MINVER#
+ (c++)"OrientationSensor::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"OrientationSensor::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"OrientationSensor::staticMetaObject@Base" 0replaceme
+ (c++)"OrientationSensor::type@Base" 0replaceme
+ (c++)"OrientationSensor::~OrientationSensor()@Base" 0replaceme
+ (c++)"OrientationSensor::~OrientationSensor()@Base" 0replaceme
+ (c++)"OrientationSensor::~OrientationSensor()@Base" 0replaceme
+ (c++)"AccelerometerSensor::type@Base" 0replaceme
+ (c++)"OrientationSensorReading::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"OrientationSensorReading::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"OrientationSensorReading::copyValuesFrom(QSensorReading*)@Base" 0replaceme
+ (c++)"OrientationSensorReading::staticMetaObject@Base" 0replaceme
+ (c++)"OrientationSensorReading::OrientationSensorReading(QObject*)@Base" 0replaceme
+ (c++)"OrientationSensorReading::OrientationSensorReading(QObject*)@Base" 0replaceme
+ (c++)"OrientationSensorReading::~OrientationSensorReading()@Base" 0replaceme
+ (c++)"OrientationSensorReading::~OrientationSensorReading()@Base" 0replaceme
+ (c++)"OrientationSensorReading::~OrientationSensorReading()@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::qt_metacall(QMetaObject::Call, int, void**)@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::qt_metacast(char const*)@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::copyValuesFrom(QSensorReading*)@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::staticMetaObject@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::AccelerometerSensorReading(QObject*)@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::AccelerometerSensorReading(QObject*)@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::~AccelerometerSensorReading()@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::~AccelerometerSensorReading()@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::~AccelerometerSensorReading()@Base" 0replaceme
+ (c++)"OrientationSensor::metaObject() const@Base" 0replaceme
+ (c++)"OrientationSensorReading::metaObject() const@Base" 0replaceme
+ (c++)"AccelerometerSensorReading::metaObject() const@Base" 0replaceme
+ (c++)"typeinfo for OrientationSensor@Base" 0replaceme
+ (c++)"typeinfo for OrientationSensorReading@Base" 0replaceme
+ (c++)"typeinfo for AccelerometerSensorReading@Base" 0replaceme
+ (c++)"typeinfo name for OrientationSensor@Base" 0replaceme
+ (c++)"typeinfo name for OrientationSensorReading@Base" 0replaceme
+ (c++)"typeinfo name for AccelerometerSensorReading@Base" 0replaceme
+ (c++)"vtable for OrientationSensor@Base" 0replaceme
+ (c++)"vtable for OrientationSensorReading@Base" 0replaceme
+ (c++)"vtable for AccelerometerSensorReading@Base" 0replaceme
