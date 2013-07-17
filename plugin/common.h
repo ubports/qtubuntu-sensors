@@ -17,7 +17,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <ubuntu/application/sensors/accelerometer.h>
+#include <ubuntu-1/application/sensors/accelerometer.h>
 
 #include <QAccelerometerReading>
 #include <QObject>
