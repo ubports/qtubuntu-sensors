@@ -28,3 +28,5 @@ target.path += $$[QT_INSTALL_PLUGINS]/sensors
 INSTALLS += target
 
 OTHER_FILES += plugin.json
+
+QMAKE_RPATHDIR = $$[QT_INSTALL_LIBS]/qtubuntu-sensors
