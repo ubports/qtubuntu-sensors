@@ -7,6 +7,7 @@ Build-Depends: debhelper (>= 9),
                pkg-config,
                qt5-default,
                qtbase5-dev,
+               qtfeedback5-dev,
                qtsensors5-dev,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/qtubuntu-sensors
@@ -23,3 +24,12 @@ Depends: ${misc:Depends},
          ${shlibs:Depends},
 Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend
+
+Package: libqt5feedback5-plugin-ubuntu
+Architecture: i386 amd64 armhf
+Pre-Depends: ${misc:Pre-Depends},
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Haptic feedback through vibration
+ Plugin for QtFeedback to implement haptic feedback in Ubuntu systems
