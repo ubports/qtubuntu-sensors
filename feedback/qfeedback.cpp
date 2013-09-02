@@ -27,6 +27,7 @@
 #include <QtCore/QTimer>
 #include <QDebug>
 #include <QtCore/QProcess>
+#include <QtCore/QFileInfo>
 
 QFeedbackMir::QFeedbackMir() : QObject(qApp),
     QFeedbackThemeInterface()
@@ -151,8 +152,14 @@ void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
     }
     qWarning() << QString("vibrateOnce effect for %1ms").arg(effectiveDuration);
 
+    QString ifaceFilename("/sys/class/timed_output/vibrator/enable");
+    if (!QFileInfo(ifaceFilename).exists())
+    {
+        qWarning() <<ifaceFilename << "not available on this system";
+        return;
+    }
     QProcess gzip;
-    gzip.setStandardOutputFile("/sys/class/timed_output/vibrator/enable");
+    gzip.setStandardOutputFile(ifaceFilename);
     gzip.start("echo", QStringList() << QString("%1").arg(effectiveDuration));
     if (!gzip.waitForStarted())
         qWarning("!started");
