@@ -1,3 +1,6 @@
+include(../coverage.pri)
+include(../qtubuntu-sensors.pro)
+
 TEMPLATE = lib
 CONFIG += plugin
 TARGET = $$qtLibraryTarget(qtfeedback_ubuntu)
