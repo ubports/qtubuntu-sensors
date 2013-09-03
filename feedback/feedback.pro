@@ -1,9 +1,16 @@
-TARGET = qtfeedback_ubuntu
-QT = core feedback
-
+TEMPLATE = lib
+CONFIG += plugin
+TARGET = $$qtLibraryTarget(qtfeedback_ubuntu)
 PLUGIN_TYPE = feedback
-load(qt_plugin)
+
+QT = core feedback
 
 HEADERS += qfeedback.h
 SOURCES += qfeedback.cpp
 
+target.path += $$[QT_INSTALL_PLUGINS]/feedback
+INSTALLS += target
+
+OTHER_FILES += feedback.json
+
+QMAKE_RPATHDIR = $$[QT_INSTALL_LIBS]/qtubuntu-feedback
