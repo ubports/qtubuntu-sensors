@@ -31,25 +31,14 @@
 QFeedbackMir::QFeedbackMir() : QObject(qApp),
     QFeedbackThemeInterface()
 {
-    if (false) {
-        // one-time initialization; currently not required
-        qWarning() << "initialization failed";
-    } else {
-        const int nbDev = 1;
-        for (int i = 0; i < nbDev; ++i) {
-            actuatorList << createFeedbackActuator(this, i);
-        }
+    const int nbDev = 1;
+    for (int i = 0; i < nbDev; ++i) {
+        actuatorList << createFeedbackActuator(this, i);
     }
 }
 
 QFeedbackMir::~QFeedbackMir()
 {
-    // Close device handles
-    const int nbDev = 1;
-    for (int i = 0 ; i < nbDev; ++i)
-        /* close device */;
-
-    // Done
 }
 
 QFeedbackInterface::PluginPriority QFeedbackMir::pluginPriority()
@@ -79,18 +68,14 @@ QVariant QFeedbackMir::actuatorProperty(const QFeedbackActuator &actuator, Actua
     {
     case Name:
         {
-            if (false /* actuator.id()*/)
-                return QString();
-
             return QString::fromLocal8Bit("Command line vibrator");
         }
 
     case State:
         {
             QFeedbackActuator::State ret = QFeedbackActuator::Unknown;
-            if (actuator.isValid() && true /* actuator.id() */) {
+            if (actuator.isValid()) {
                 ret = QFeedbackActuator::Ready;
-                // ret = QFeedbackActuator:: Busy;
             }
 
             return ret;
@@ -120,22 +105,11 @@ bool QFeedbackMir::isActuatorCapabilitySupported(const QFeedbackActuator &, QFee
 void QFeedbackMir::updateEffectProperty(const QFeedbackHapticsEffect *effect, EffectProperty)
 {
     if (effect->period() > 0) {
-        /*
-        periodic effect
-        effect->duration(), // QFeedbackEffect::Infinite means infinite
-        effect->intensity(),
-        effect->period(),
-        effect->attackTime(),
-        effect->attackIntensity(),
-        effect->fadeTime(),
-        effect->fadeIntensity()
-        */
+        /* Not currently supported */
+        reportError(effect, QFeedbackEffect::UnknownError);
     } else {
         /* one-off */
     }
-
-    if (false)
-        reportError(effect, QFeedbackEffect::UnknownError);
 
 }
 
@@ -181,19 +155,10 @@ QFeedbackEffect::State QFeedbackMir::effectState(const QFeedbackHapticsEffect *)
     return QFeedbackEffect::Stopped;
 }
 
-void QFeedbackMir::setLoaded(QFeedbackFileEffect *effect, bool load)
+void QFeedbackMir::setLoaded(QFeedbackFileEffect *effect, bool)
 {
-    const QUrl url = effect->source();
-    // This doesn't handle qrc urls..
-    const QString fileName = url.toLocalFile();
-    if (fileName.isEmpty())
-        return;
-
-    if (!load /* && !fileData.contains(filename) */)
-        return;
-
-    if (false)
-        reportLoadFinished(effect, true);
+    // Not currently supported
+     reportError(effect, QFeedbackEffect::UnknownError);
 }
 
 void QFeedbackMir::setEffectState(QFeedbackFileEffect *effect, QFeedbackEffect::State state)
@@ -207,17 +172,13 @@ void QFeedbackMir::setEffectState(QFeedbackFileEffect *effect, QFeedbackEffect::
     case QFeedbackEffect::Running:
         break;
     default:
+        reportError(effect, QFeedbackEffect::UnknownError);
         break;
     }
-
-    if (false)
-        reportError(effect, QFeedbackEffect::UnknownError);
 }
 
 QFeedbackEffect::State QFeedbackMir::effectState(const QFeedbackFileEffect *)
 {
-    //return QFeedbackEffect::Paused;
-    //return QFeedbackEffect::Running;
     return QFeedbackEffect::Stopped;
 }
 
