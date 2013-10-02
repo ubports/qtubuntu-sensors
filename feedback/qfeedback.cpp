@@ -107,10 +107,7 @@ void QFeedbackMir::updateEffectProperty(const QFeedbackHapticsEffect *effect, Ef
     if (effect->period() > 0) {
         /* Not currently supported */
         reportError(effect, QFeedbackEffect::UnknownError);
-    } else {
-        /* one-off */
     }
-
 }
 
 void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
