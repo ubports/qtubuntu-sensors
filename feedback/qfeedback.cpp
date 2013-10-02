@@ -129,9 +129,12 @@ void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
         qWarning() << ifaceFilename << "not available on this system";
         return;
     }
-    QProcess gzip;
-    gzip.setStandardOutputFile(ifaceFilename);
-    gzip.start("echo", QStringList() << QString("%1").arg(effectiveDuration));
+
+    // This is fire and forget, no support for on-going vibrations or errors
+    // Later this will be replaced with using a vibration service
+    QProcess vibrator;
+    vibrator.setStandardOutputFile(ifaceFilename);
+    vibrator.start("echo", QStringList() << QString("%1").arg(effectiveDuration));
 }
 
 void QFeedbackMir::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
