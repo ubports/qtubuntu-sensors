@@ -115,8 +115,8 @@ void QFeedbackMir::updateEffectProperty(const QFeedbackHapticsEffect *effect, Ef
 
 void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
 {
-    int effectiveDuration;
-    switch (effect->duration())
+    int effectiveDuration = effect->duration();
+    switch (effectiveDuration)
     {
         case QFeedbackEffect::Infinite:
         case 0:
