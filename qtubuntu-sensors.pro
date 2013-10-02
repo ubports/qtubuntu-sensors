@@ -3,6 +3,7 @@ include(coverage.pri)
 TEMPLATE = subdirs
 
 SUBDIRS += \
+    feedback \
     lib \
     plugin
 
