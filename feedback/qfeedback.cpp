@@ -195,6 +195,7 @@ int QFeedbackMir::effectDuration(const QFeedbackFileEffect *effect)
 
 QStringList QFeedbackMir::supportedMimeTypes()
 {
+    // The MIME type was taken from the MeeGo feedback plugin
     return QStringList() << QLatin1String("vibra/ivt");
 }
 
