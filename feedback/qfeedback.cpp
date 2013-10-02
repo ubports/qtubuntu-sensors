@@ -190,7 +190,6 @@ QFeedbackEffect::State QFeedbackMir::effectState(const QFeedbackFileEffect *)
 
 int QFeedbackMir::effectDuration(const QFeedbackFileEffect *effect)
 {
-    QString fileName = effect->source().toLocalFile();
     return 0;
 }
 
