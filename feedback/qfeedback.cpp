@@ -155,6 +155,8 @@ void QFeedbackMir::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbac
 
 QFeedbackEffect::State QFeedbackMir::effectState(const QFeedbackHapticsEffect *)
 {
+    // We don't currently support on-going vibrations
+    // This can be added when moving to a vibration service
     return QFeedbackEffect::Stopped;
 }
 
