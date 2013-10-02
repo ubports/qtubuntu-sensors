@@ -25,7 +25,6 @@
 #include <QtCore/QFile>
 #include <QtCore/QVariant>
 #include <QtCore/QTimer>
-#include <QDebug>
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
 
@@ -68,7 +67,6 @@ void QFeedbackMir::setActuatorProperty(const QFeedbackActuator &, ActuatorProper
     switch (prop)
     {
     case Enabled:
-        qWarning() << "mir fp enabled";
         break;
     default:
         break;
@@ -150,22 +148,16 @@ void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
         case 0:
             effectiveDuration = 150;
     }
-    qWarning() << QString("vibrateOnce effect for %1ms").arg(effectiveDuration);
 
     QString ifaceFilename("/sys/class/timed_output/vibrator/enable");
     if (!QFileInfo(ifaceFilename).exists())
     {
-        qWarning() <<ifaceFilename << "not available on this system";
+        qWarning() << ifaceFilename << "not available on this system";
         return;
     }
     QProcess gzip;
     gzip.setStandardOutputFile(ifaceFilename);
     gzip.start("echo", QStringList() << QString("%1").arg(effectiveDuration));
-    if (!gzip.waitForStarted())
-        qWarning("!started");
-
-    if (!gzip.waitForFinished())
-        qWarning("!finished");
 }
 
 void QFeedbackMir::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
