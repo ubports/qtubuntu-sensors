@@ -129,7 +129,6 @@ void QFeedbackMir::vibrateOnce(const QFeedbackEffect* effect)
 
     // This is fire and forget, no support for on-going vibrations or errors
     // Later this will be replaced with using a vibration service
-    QProcess vibrator;
     vibrator.setStandardOutputFile(ifaceFilename);
     // The process launches async
     vibrator.start("echo", QStringList() << QString("%1").arg(effectiveDuration));
