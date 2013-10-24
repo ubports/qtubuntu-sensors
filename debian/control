@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
-               libubuntu-platform-api1-dev,
+               libplatform-api1-dev,
                pkg-config,
                qt5-default,
                qtbase5-dev,
@@ -11,8 +11,9 @@ Build-Depends: debhelper (>= 9),
                qtsensors5-dev,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/qtubuntu-sensors
-# If you aren't a member of http://pad.lv/~phablet-team but need to upload packaging changes,
-# just go ahead.  http://pad.lv/~phablet-team will notice and sync up the code again.
+# if you don't have have commit access to this branch but would like to upload
+# directly to Ubuntu, don't worry: your changes will be merged back into the
+# upstream branch
 Vcs-Bzr: lp:qtubuntu-sensors
 Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
