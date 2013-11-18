@@ -25,6 +25,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QMutex>
 #include <QtCore/QTimer>
+#include <QtCore/QProcess>
 
 #include <qfeedbackplugininterfaces.h>
 
@@ -67,6 +68,7 @@ public:
     virtual bool play(QFeedbackEffect::Effect);
 private:
     QList<QFeedbackActuator*> actuatorList;
+    QProcess vibrator;
 
     void vibrateOnce(const QFeedbackEffect* effect);
 };
