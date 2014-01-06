@@ -21,39 +21,43 @@
 
 #include <QAccelerometerReading>
 #include <QObject>
+#include <QSharedPointer>
+
+Q_DECLARE_METATYPE(QSharedPointer<QAccelerometerReading>)
 
 class AccelerometerCommon : public QObject
 {
     Q_OBJECT
 
 public:
-    AccelerometerCommon(QObject *parent = NULL);
+    static AccelerometerCommon& instance();
+    
     ~AccelerometerCommon();
 
     void start();
     void stop();
-
-    QAccelerometerReading *reading() const;
 
     qreal getMinDelay() const;
     qreal getMinValue() const;
     qreal getMaxValue() const;
     qreal getResolution() const;
 
-    static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
 
 Q_SIGNALS:
-    void accelerometerReadingChanged();
+    void accelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
+    AccelerometerCommon(QObject *parent = NULL);
+    
     UASensorsAccelerometer *m_accelerometer;
-    QAccelerometerReading *m_reading;
+
     qreal m_minDelay;
     qreal m_minValue;
     qreal m_maxValue;
     qreal m_resolution;
 
     // Gets called by the Aal sensor wrapper when there is a new accelerometer reading
+    static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
     void onAccelerometerReading(UASAccelerometerEvent *event);
 };
 

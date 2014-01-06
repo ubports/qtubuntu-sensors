@@ -34,14 +34,10 @@ public:
     void start();
     void stop();
 
-Q_SIGNALS:
-    void readingChanged();
-
 public Q_SLOTS:
-    void onAccelerometerReadingChanged();
+    void onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
-    AccelerometerCommon *m_accelCommon;
     QAccelerometerReading m_reading;
 };
 

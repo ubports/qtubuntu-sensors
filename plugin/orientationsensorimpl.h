@@ -39,14 +39,13 @@ Q_SIGNALS:
     void readingChanged();
 
 public Q_SLOTS:
-    void onAccelerometerReadingChanged();
+    void onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
     // The distance from the center, right or left, that will trigger an
     // orientation change when the user rotates the target device.
     static const float m_accelDelta;
 
-    AccelerometerCommon *m_accelCommon;
     QOrientationReading m_reading;
     QOrientationReading m_readingCache;
 };

@@ -17,15 +17,22 @@
 #include "common.h"
 
 #include <QDebug>
+#include <QMetaType>
+
+AccelerometerCommon& AccelerometerCommon::instance()
+{
+    static AccelerometerCommon instance;
+    return instance;
+}
 
 AccelerometerCommon::AccelerometerCommon(QObject *parent)
     : QObject(parent),
-      m_reading(new QAccelerometerReading),
       m_minDelay(-1),
       m_minValue(0.0),
       m_maxValue(0.0),
       m_resolution(0.0)
 {
+    qRegisterMetaType<QSharedPointer<QAccelerometerReading> >("QSharedPointer<QAccelerometerReading>");
     m_accelerometer = ua_sensors_accelerometer_new();
 
     ua_sensors_accelerometer_set_reading_cb(
@@ -43,9 +50,6 @@ AccelerometerCommon::AccelerometerCommon(QObject *parent)
 
 AccelerometerCommon::~AccelerometerCommon()
 {
-    if (m_reading != NULL) {
-        delete m_reading;
-    }
 }
 
 void AccelerometerCommon::start()
@@ -56,11 +60,6 @@ void AccelerometerCommon::start()
 void AccelerometerCommon::stop()
 {
     ua_sensors_accelerometer_disable(m_accelerometer);
-}
-
-QAccelerometerReading *AccelerometerCommon::reading() const
-{
-    return m_reading;
 }
 
 qreal AccelerometerCommon::getMinDelay() const
@@ -92,27 +91,18 @@ void AccelerometerCommon::onAccelerometerReadingCb(UASAccelerometerEvent *event,
 
 void AccelerometerCommon::onAccelerometerReading(UASAccelerometerEvent *event)
 {
+    printf("%s: %p: ", __PRETTY_FUNCTION__, this);
     Q_ASSERT(event != NULL);
 
-    float accel_x = uas_accelerometer_event_get_acceleration_x(event);
-    float accel_y = uas_accelerometer_event_get_acceleration_y(event);
-    float accel_z = uas_accelerometer_event_get_acceleration_z(event);
+    QSharedPointer<QAccelerometerReading> reading(new QAccelerometerReading());
+    reading->setX(uas_accelerometer_event_get_acceleration_x(event));
+    reading->setY(uas_accelerometer_event_get_acceleration_y(event));
+    reading->setZ(uas_accelerometer_event_get_acceleration_z(event));
 
-    // Check for duplicate values to avoid unnecessary signal emission
-    if (m_reading->x() == accel_x &&
-        m_reading->y() == accel_y &&
-        m_reading->z() == accel_z)
-    {
-        return;
-    }
-
-    // Capture the coordinates from the accelerometer device
-    m_reading->setX(accel_x);
-    m_reading->setY(accel_y);
-    m_reading->setZ(accel_z);
+    printf("%f, %f, %f \n", reading->x(), reading->y(), reading->z());
 
     // Set the timestamp as set by the hybris layer
-    m_reading->setTimestamp(uas_accelerometer_event_get_timestamp(event));
+    reading->setTimestamp(uas_accelerometer_event_get_timestamp(event));
 
-    Q_EMIT accelerometerReadingChanged();
+    Q_EMIT accelerometerReadingChanged(reading);
 }

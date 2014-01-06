@@ -23,57 +23,57 @@ char const * const AccelerometerSensorImpl::id("aal.accelerometer");
 AccelerometerSensorImpl::AccelerometerSensorImpl(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    m_accelCommon = new AccelerometerCommon(this);
-
     // Register the reading instance with the parent
     setReading<QAccelerometerReading>(&m_reading);
 
-    const qreal minDelay = m_accelCommon->getMinDelay();
+    const qreal minDelay = AccelerometerCommon::instance().getMinDelay();
     if (minDelay > -1)
     {
         // Min and max sensor sampling frequencies, in Hz
         addDataRate(minDelay, minDelay * 10);
     }
-    addOutputRange(m_accelCommon->getMinValue(),
-                   m_accelCommon->getMaxValue(),
-                   m_accelCommon->getResolution());
+    addOutputRange(AccelerometerCommon::instance().getMinValue(),
+                   AccelerometerCommon::instance().getMaxValue(),
+                   AccelerometerCommon::instance().getResolution());
 
     // Connect to the accelerometer's readingChanged signal
-    connect(m_accelCommon, SIGNAL(accelerometerReadingChanged()), this, SLOT(onAccelerometerReadingChanged()));
+    // This has to be a queued connection as the sensor callback
+    // from the platform API can happen on an arbitrary thread.
+    connect(
+        &AccelerometerCommon::instance(), 
+        SIGNAL(accelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)), 
+        this, 
+        SLOT(onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)),
+        Qt::QueuedConnection);
 
     setDescription(QLatin1String("Accelerometer Sensor"));
 }
 
 AccelerometerSensorImpl::~AccelerometerSensorImpl()
 {
-    if (m_accelCommon != NULL) {
-        delete m_accelCommon;
-    }
 }
 
 void AccelerometerSensorImpl::start()
 {
-    Q_ASSERT(m_accelCommon != NULL);
-    m_accelCommon->start();
+    AccelerometerCommon::instance().start();
 }
 
 void AccelerometerSensorImpl::stop()
 {
-    Q_ASSERT(m_accelCommon != NULL);
-    m_accelCommon->stop();
+    AccelerometerCommon::instance().stop();
 }
 
-void AccelerometerSensorImpl::onAccelerometerReadingChanged()
+void AccelerometerSensorImpl::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading)
 {
-    Q_ASSERT(m_accelCommon != NULL);
-
-    const QAccelerometerReading *reading = m_accelCommon->reading();
-    Q_ASSERT(reading != NULL);
+    printf("%s: %p: ", __PRETTY_FUNCTION__, this);
 
     // Capture the coordinates from the accelerometer device
     m_reading.setX(reading->x());
     m_reading.setY(reading->y());
     m_reading.setZ(reading->z());
+    m_reading.setTimestamp(reading->timestamp());
+    
+    printf("%f, %f, %f \n", reading->x(), reading->y(), reading->z());
 
     newReadingAvailable();
 }
