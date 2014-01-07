@@ -8,12 +8,12 @@ PLUGIN_TYPE = position
 QT = location core
 
 HEADERS += \
-    qgeopositioninfosource_ubuntu_p.h \
-    qgeopositioninfosourcefactory_ubuntu.h
+    core_geo_position_info_source.h \
+    core_geo_position_info_source_factory.h
 
 SOURCES += \
-    qgeopositioninfosource_ubuntu.cpp \
-    qgeopositioninfosourcefactory_ubuntu.cpp
+    core_geo_position_info_source.cpp \
+    core_geo_position_info_source_factory.cpp
 
 INCLUDEPATH += $$PWD/
 

@@ -1,45 +1,22 @@
-/****************************************************************************
-**
-** Copyright (C) 2012 Digia Plc and/or its subsidiary(-ies).
-** Contact: http://www.qt-project.org/legal
-**
-** This file is part of the QtLocation module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Digia.  For licensing terms and
-** conditions see http://qt.digia.com/licensing.  For further information
-** use the contact form at http://qt.digia.com/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU Lesser General Public License version 2.1 requirements
-** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** In addition, as a special exception, Digia gives you certain additional
-** rights.  These rights are described in the Digia Qt LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+/*
+ * Copyright 2013 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Thomas Voß <thomas.voss@canonical.com>
+ */
 
-#include "qgeopositioninfosource_ubuntu_p.h"
+#include "core_geo_position_info_source.h"
 
 #include <QtCore>
 
@@ -50,9 +27,7 @@
 #include <ubuntu/application/location/position_update.h>
 #include <ubuntu/application/location/velocity_update.h>
 
-QT_BEGIN_NAMESPACE
-
-struct QGeoPositionInfoSourceUbuntu::Private
+struct core::GeoPositionInfoSource::Private
 {
     static const unsigned int empty_creation_flags = 0;
     
@@ -154,7 +129,7 @@ struct QGeoPositionInfoSourceUbuntu::Private
             Q_ARG(QGeoPositionInfo, lastKnownPosition));
     };
 
-    Private(QGeoPositionInfoSourceUbuntu* parent)
+    Private(core::GeoPositionInfoSource* parent)
             : parent(parent),
               session(ua_location_service_create_session_for_high_accuracy(empty_creation_flags))
     {
@@ -181,63 +156,63 @@ struct QGeoPositionInfoSourceUbuntu::Private
         ua_location_service_session_unref(session);
     }
 
-    QGeoPositionInfoSourceUbuntu* parent;
+    core::GeoPositionInfoSource* parent;
     UALocationServiceSession* session;
     QGeoPositionInfo lastKnownPosition;
     QTimer timer;
 };
 
-QGeoPositionInfoSourceUbuntu::QGeoPositionInfoSourceUbuntu(QObject *parent)
+core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
         : QGeoPositionInfoSource(parent), d(new Private(this))
 {
     d->timer.setSingleShot(true);
     QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(updateTimeout()));
 }
 
-QGeoPositionInfoSourceUbuntu::~QGeoPositionInfoSourceUbuntu()
+core::GeoPositionInfoSource::~GeoPositionInfoSource()
 {
 }
 
-void QGeoPositionInfoSourceUbuntu::setUpdateInterval(int msec)
+void core::GeoPositionInfoSource::setUpdateInterval(int msec)
 {
     (void) msec;
 }
 
-void QGeoPositionInfoSourceUbuntu::setPreferredPositioningMethods(PositioningMethods methods)
+void core::GeoPositionInfoSource::setPreferredPositioningMethods(PositioningMethods methods)
 {
     QGeoPositionInfoSource::setPreferredPositioningMethods(methods);
 }
 
-QGeoPositionInfo QGeoPositionInfoSourceUbuntu::lastKnownPosition(bool fromSatellitePositioningMethodsOnly) const
+QGeoPositionInfo core::GeoPositionInfoSource::lastKnownPosition(bool fromSatellitePositioningMethodsOnly) const
 {
     Q_UNUSED(fromSatellitePositioningMethodsOnly);
     return d->lastKnownPosition;
 }
 
-QGeoPositionInfoSource::PositioningMethods QGeoPositionInfoSourceUbuntu::supportedPositioningMethods() const
+QGeoPositionInfoSource::PositioningMethods core::GeoPositionInfoSource::supportedPositioningMethods() const
 {
     return AllPositioningMethods;
 }
 
-void QGeoPositionInfoSourceUbuntu::startUpdates()
+void core::GeoPositionInfoSource::startUpdates()
 {
     ua_location_service_session_start_position_updates(d->session);
     ua_location_service_session_start_heading_updates(d->session);
     ua_location_service_session_start_velocity_updates(d->session);
 }
 
-int QGeoPositionInfoSourceUbuntu::minimumUpdateInterval() const {
+int core::GeoPositionInfoSource::minimumUpdateInterval() const {
     return 500;
 }
 
-void QGeoPositionInfoSourceUbuntu::stopUpdates()
+void core::GeoPositionInfoSource::stopUpdates()
 {
     ua_location_service_session_stop_position_updates(d->session);
     ua_location_service_session_stop_heading_updates(d->session);
     ua_location_service_session_stop_velocity_updates(d->session);
 }
 
-void QGeoPositionInfoSourceUbuntu::requestUpdate(int timeout)
+void core::GeoPositionInfoSource::requestUpdate(int timeout)
 {
     if (d->timer.isActive())
     {
@@ -248,9 +223,7 @@ void QGeoPositionInfoSourceUbuntu::requestUpdate(int timeout)
     d->timer.start(timeout);
 }
 
-QGeoPositionInfoSource::Error QGeoPositionInfoSourceUbuntu::error() const
+QGeoPositionInfoSource::Error core::GeoPositionInfoSource::error() const
 {
     return UnknownSourceError;
 }
-
-QT_END_NAMESPACE
