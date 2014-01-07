@@ -36,10 +36,10 @@ core::SharedAccelerometer::SharedAccelerometer(QObject *parent)
     m_accelerometer = ua_sensors_accelerometer_new();
 
     ua_sensors_accelerometer_set_reading_cb(
-        m_accelerometer,
-        core::SharedAccelerometer::onAccelerometerReadingCb,
-        static_cast<void *>(this));
-    
+                m_accelerometer,
+                core::SharedAccelerometer::onAccelerometerReadingCb,
+                static_cast<void *>(this));
+
     // Get the minimum sensor reading delay
     m_minDelay = static_cast<qreal>(ua_sensors_accelerometer_get_min_delay(m_accelerometer));
     m_minValue = static_cast<qreal>(ua_sensors_accelerometer_get_min_value(m_accelerometer));
@@ -88,6 +88,9 @@ void core::SharedAccelerometer::onAccelerometerReading(UASAccelerometerEvent *ev
 {
     Q_ASSERT(event != NULL);
 
+    // TODO(tvoss): We should rely on an object pool to recycle accelerometer reading
+    // instances here. We could use a custom deleter for the shared pointer to put
+    // instances that have been successfully delivered to slots back into the pool.
     QSharedPointer<QAccelerometerReading> reading(new QAccelerometerReading());
     reading->setX(uas_accelerometer_event_get_acceleration_x(event));
     reading->setY(uas_accelerometer_event_get_acceleration_y(event));
