@@ -1,3 +1,1 @@
-usr/lib/*/qt5/plugins/feedback/libqtfeedback_ubuntu.so
-usr/lib/*/qt5/plugins/sensors/libqtubuntu_sensors_plugins.so
 data/Sensors.conf /etc/xdg/QtProject
