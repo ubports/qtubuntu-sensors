@@ -14,31 +14,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACCELEROMETERIMPL_H
-#define ACCELEROMETERIMPL_H
+#ifndef CORE_ORIENTATION_SENSOR_H
+#define CORE_ORIENTATION_SENSOR_H
 
-#include "common.h"
+#include <QAccelerometerReading>
+#include <QOrientationReading>
 
 #include <qsensorbackend.h>
 
-class AccelerometerSensorImpl : public QSensorBackend
+namespace core
+{
+class OrientationSensor : public QSensorBackend
 {
     Q_OBJECT
 
 public:
-    static char const * const id;
+    inline static const char* id()
+    {
+        return "core.orientation";
+    }
 
-    AccelerometerSensorImpl(QSensor *sensor = NULL);
-    virtual ~AccelerometerSensorImpl();
+    OrientationSensor(QSensor *sensor);
 
+    // From QSensorBackend
     void start();
     void stop();
+
+Q_SIGNALS:
+    void readingChanged();
 
 public Q_SLOTS:
     void onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
-    QAccelerometerReading m_reading;
-};
+    // The distance from the center, right or left, that will trigger an
+    // orientation change when the user rotates the target device.
+    static const float m_accelDelta;
 
-#endif
+    QOrientationReading m_reading;
+    QOrientationReading m_readingCache;
+};
+}
+
+#endif // CORE_ORIENTATION_SENSOR_H

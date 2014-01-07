@@ -14,18 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "common.h"
+#include "core_shared_accelerometer.h"
 
 #include <QDebug>
 #include <QMetaType>
 
-AccelerometerCommon& AccelerometerCommon::instance()
+core::SharedAccelerometer& core::SharedAccelerometer::instance()
 {
-    static AccelerometerCommon instance;
+    static core::SharedAccelerometer instance;
     return instance;
 }
 
-AccelerometerCommon::AccelerometerCommon(QObject *parent)
+core::SharedAccelerometer::SharedAccelerometer(QObject *parent)
     : QObject(parent),
       m_minDelay(-1),
       m_minValue(0.0),
@@ -37,9 +37,8 @@ AccelerometerCommon::AccelerometerCommon(QObject *parent)
 
     ua_sensors_accelerometer_set_reading_cb(
         m_accelerometer,
-        AccelerometerCommon::onAccelerometerReadingCb,
-        static_cast<void *>(this)
-        );
+        core::SharedAccelerometer::onAccelerometerReadingCb,
+        static_cast<void *>(this));
     
     // Get the minimum sensor reading delay
     m_minDelay = static_cast<qreal>(ua_sensors_accelerometer_get_min_delay(m_accelerometer));
@@ -48,50 +47,45 @@ AccelerometerCommon::AccelerometerCommon(QObject *parent)
     m_resolution = static_cast<qreal>(ua_sensors_accelerometer_get_resolution(m_accelerometer));
 }
 
-AccelerometerCommon::~AccelerometerCommon()
-{
-}
-
-void AccelerometerCommon::start()
+void core::SharedAccelerometer::start()
 {
     ua_sensors_accelerometer_enable(m_accelerometer);
 }
 
-void AccelerometerCommon::stop()
+void core::SharedAccelerometer::stop()
 {
     ua_sensors_accelerometer_disable(m_accelerometer);
 }
 
-qreal AccelerometerCommon::getMinDelay() const
+qreal core::SharedAccelerometer::getMinDelay() const
 {
     return m_minDelay;
 }
 
-qreal AccelerometerCommon::getMinValue() const
+qreal core::SharedAccelerometer::getMinValue() const
 {
     return m_minValue;
 }
 
-qreal AccelerometerCommon::getMaxValue() const
+qreal core::SharedAccelerometer::getMaxValue() const
 {
     return m_maxValue;
 }
 
-qreal AccelerometerCommon::getResolution() const
+qreal core::SharedAccelerometer::getResolution() const
 {
     return m_resolution;
 }
 
-void AccelerometerCommon::onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context)
+void core::SharedAccelerometer::onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context)
 {
-    AccelerometerCommon *ac = static_cast<AccelerometerCommon *>(context);
+    SharedAccelerometer* ac = static_cast<SharedAccelerometer*>(context);
     if (ac != NULL)
         ac->onAccelerometerReading(event);
 }
 
-void AccelerometerCommon::onAccelerometerReading(UASAccelerometerEvent *event)
+void core::SharedAccelerometer::onAccelerometerReading(UASAccelerometerEvent *event)
 {
-    printf("%s: %p: ", __PRETTY_FUNCTION__, this);
     Q_ASSERT(event != NULL);
 
     QSharedPointer<QAccelerometerReading> reading(new QAccelerometerReading());
@@ -99,9 +93,6 @@ void AccelerometerCommon::onAccelerometerReading(UASAccelerometerEvent *event)
     reading->setY(uas_accelerometer_event_get_acceleration_y(event));
     reading->setZ(uas_accelerometer_event_get_acceleration_z(event));
 
-    printf("%f, %f, %f \n", reading->x(), reading->y(), reading->z());
-
-    // Set the timestamp as set by the hybris layer
     reading->setTimestamp(uas_accelerometer_event_get_timestamp(event));
 
     Q_EMIT accelerometerReadingChanged(reading);

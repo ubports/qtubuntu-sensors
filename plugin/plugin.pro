@@ -8,21 +8,22 @@ PLUGIN_TYPE = sensors
 
 QT = sensors core
 
-INCLUDEPATH += $$PWD/../lib
+INCLUDEPATH += $$PWD/
 
-LIBS += -L$$OUT_PWD/../lib -lqtubuntu_sensors
+LIBS += -L$$OUT_PWD/
 LIBS += -lubuntu_application_api
 
 HEADERS += \
-    common.h \
-    orientationsensorimpl.h \
-    accelerometersensorimpl.h
+    core_accelerometer.h \
+    core_orientation_sensor.h \
+    core_sensor_plugins.h \
+    core_shared_accelerometer.h
 
 SOURCES += \
-    common.cpp \
-    orientationsensorimpl.cpp \
-    accelerometersensorimpl.cpp \
-    main.cpp
+    core_accelerometer.cpp \
+    core_orientation_sensor.cpp \
+    core_sensor_plugins.cpp \
+    core_shared_accelerometer.cpp
 
 target.path += $$[QT_INSTALL_PLUGINS]/sensors
 INSTALLS += target

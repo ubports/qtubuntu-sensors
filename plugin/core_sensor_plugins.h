@@ -14,10 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "orientationsensor.h"
-#include "orientationsensorimpl.h"
-#include "accelerometersensor.h"
-#include "accelerometersensorimpl.h"
+#ifndef CORE_SENSOR_PLUGINS_H
+#define CORE_SENSOR_PLUGINS_H
 
 #include <qsensorplugin.h>
 #include <qsensorbackend.h>
@@ -27,31 +25,24 @@
 
 #include <QDebug>
 
-class AalSensorPlugins : public QObject, public QSensorPluginInterface, public QSensorBackendFactory
+namespace core
+{
+class SensorPlugins
+        : public QObject,
+          public QSensorPluginInterface,
+          public QSensorBackendFactory
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "com.qt-project.Qt.QSensorPluginInterface/1.0" FILE "plugin.json")
     Q_INTERFACES(QSensorPluginInterface)
 
 public:
-    void registerSensors()
-    {
-        qDebug() << "Registered the AalSensorPlugin types" << endl;
-        QSensorManager::registerBackend(QOrientationSensor::type, OrientationSensorImpl::id, this);
-        QSensorManager::registerBackend(QAccelerometer::type, AccelerometerSensorImpl::id, this);
-    }
+    // From QSensorPluginInterface
+    void registerSensors();
 
-    // Instantiate all sensor backends here:
-    QSensorBackend *createBackend(QSensor *sensor)
-    {
-        if (sensor->identifier() == OrientationSensorImpl::id)
-            return new OrientationSensorImpl(sensor);
-
-        if (sensor->identifier() == AccelerometerSensorImpl::id)
-            return new AccelerometerSensorImpl(sensor);
-
-        return NULL;
-    }
+    // From QSensorBackendFactory
+    QSensorBackend *createBackend(QSensor *sensor);
 };
+}
 
-#include "main.moc"
+#endif // CORE_SENSOR_PLUGINS_H

@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef CORE_SHARED_ACCELEROMETER_H
+#define CORE_SHARED_ACCELEROMETER_H
 
 #include <ubuntu/application/sensors/accelerometer.h>
 
@@ -25,14 +25,14 @@
 
 Q_DECLARE_METATYPE(QSharedPointer<QAccelerometerReading>)
 
-class AccelerometerCommon : public QObject
+namespace core
+{
+class SharedAccelerometer : public QObject
 {
     Q_OBJECT
 
 public:
-    static AccelerometerCommon& instance();
-    
-    ~AccelerometerCommon();
+    static SharedAccelerometer& instance();
 
     void start();
     void stop();
@@ -42,13 +42,12 @@ public:
     qreal getMaxValue() const;
     qreal getResolution() const;
 
-
 Q_SIGNALS:
     void accelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
-    AccelerometerCommon(QObject *parent = NULL);
-    
+    SharedAccelerometer(QObject *parent = NULL);
+
     UASensorsAccelerometer *m_accelerometer;
 
     qreal m_minDelay;
@@ -56,9 +55,10 @@ private:
     qreal m_maxValue;
     qreal m_resolution;
 
-    // Gets called by the Aal sensor wrapper when there is a new accelerometer reading
+    // Gets called by the underlying platform when there is a new accelerometer reading
     static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
     void onAccelerometerReading(UASAccelerometerEvent *event);
 };
+}
 
-#endif
+#endif // CORE_SHARED_ACCELEROMETER_H
