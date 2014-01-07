@@ -14,64 +14,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "orientationsensorimpl.h"
+#include "core_orientation_sensor.h"
+
+#include "core_shared_accelerometer.h"
 
 #include <QDebug>
 
-char const * const OrientationSensorImpl::id("aal.orientationsensor");
+const float core::OrientationSensor::m_accelDelta = 7.35;
 
-const float OrientationSensorImpl::m_accelDelta = 7.35;
-
-OrientationSensorImpl::OrientationSensorImpl(QSensor *sensor)
+core::OrientationSensor::OrientationSensor(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    m_accelCommon = new AccelerometerCommon(this);
-
     // Register the reading instance with the parent
     setReading<QOrientationReading>(&m_reading);
 
-    const qreal minDelay = m_accelCommon->getMinDelay();
+    const qreal minDelay = core::SharedAccelerometer::instance().getMinDelay();
     if (minDelay > -1)
     {
         // Min and max sensor sampling frequencies, in Hz
         addDataRate(minDelay, minDelay * 10);
     }
-    addOutputRange(m_accelCommon->getMinValue(),
-                   m_accelCommon->getMaxValue(),
-                   m_accelCommon->getResolution());
+    addOutputRange(core::SharedAccelerometer::instance().getMinValue(),
+                   core::SharedAccelerometer::instance().getMaxValue(),
+                   core::SharedAccelerometer::instance().getResolution());
 
     // Connect to the accelerometer's readingChanged signal
-    connect(m_accelCommon, SIGNAL(accelerometerReadingChanged()), this, SLOT(onAccelerometerReadingChanged()));
+    connect(&core::SharedAccelerometer::instance(),
+            SIGNAL(accelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)), 
+            this, 
+            SLOT(onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)),
+            Qt::QueuedConnection);
 
     setDescription(QLatin1String("Orientation Sensor"));
 }
 
-OrientationSensorImpl::~OrientationSensorImpl()
+void core::OrientationSensor::start()
 {
-    if (m_accelCommon != NULL) {
-        delete m_accelCommon;
-    }
+    core::SharedAccelerometer::instance().start();
 }
 
-void OrientationSensorImpl::start()
+void core::OrientationSensor::stop()
 {
-    Q_ASSERT(m_accelCommon != NULL);
-    m_accelCommon->start();
+    core::SharedAccelerometer::instance().stop();
 }
 
-void OrientationSensorImpl::stop()
+void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading)
 {
-    Q_ASSERT(m_accelCommon != NULL);
-    m_accelCommon->stop();
-}
-
-void OrientationSensorImpl::onAccelerometerReadingChanged()
-{
-    Q_ASSERT(m_accelCommon != NULL);
-
-    const QAccelerometerReading *reading = m_accelCommon->reading();
-    Q_ASSERT(reading != NULL);
-
     // Interpret the accelerometer data into a meaningful orientation
     if (reading->y() > m_accelDelta)
         m_reading.setOrientation(QOrientationReading::TopUp);

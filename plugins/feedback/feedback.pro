@@ -1,5 +1,4 @@
-include(../coverage.pri)
-include(../qtubuntu-sensors.pro)
+include(../../coverage.pri)
 
 TEMPLATE = lib
 CONFIG += plugin
@@ -8,8 +7,8 @@ PLUGIN_TYPE = feedback
 
 QT = core feedback
 
-HEADERS += qfeedback.h
-SOURCES += qfeedback.cpp
+HEADERS += core_feedback.h
+SOURCES += core_feedback.cpp
 
 target.path += $$[QT_INSTALL_PLUGINS]/feedback
 INSTALLS += target

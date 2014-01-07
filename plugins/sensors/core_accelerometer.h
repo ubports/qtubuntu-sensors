@@ -14,35 +14,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ACCELEROMETERIMPL_H
-#define ACCELEROMETERIMPL_H
+#ifndef CORE_ACCELEROMETER_H
+#define CORE_ACCELEROMETER_H
 
-#include "common.h"
+#include <QAccelerometerReading>
 
 #include <qsensorbackend.h>
 
-class AccelerometerSensorImpl : public QSensorBackend
+namespace core
+{
+class Accelerometer : public QSensorBackend
 {
     Q_OBJECT
-
 public:
-    static char const * const id;
+    inline static const char* id()
+    {
+        return "core.accelerometer";
+    }
 
-    AccelerometerSensorImpl(QSensor *sensor = NULL);
-    virtual ~AccelerometerSensorImpl();
+    Accelerometer(QSensor *sensor);
+    virtual ~Accelerometer();
 
     void start();
     void stop();
 
-Q_SIGNALS:
-    void readingChanged();
-
 public Q_SLOTS:
-    void onAccelerometerReadingChanged();
+    void onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
-    AccelerometerCommon *m_accelCommon;
     QAccelerometerReading m_reading;
 };
+}
 
-#endif
+#endif // CORE_ACCELEROMETER_H

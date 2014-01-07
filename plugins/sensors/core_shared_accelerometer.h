@@ -14,47 +14,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef CORE_SHARED_ACCELEROMETER_H
+#define CORE_SHARED_ACCELEROMETER_H
 
 #include <ubuntu/application/sensors/accelerometer.h>
 
 #include <QAccelerometerReading>
 #include <QObject>
+#include <QSharedPointer>
 
-class AccelerometerCommon : public QObject
+Q_DECLARE_METATYPE(QSharedPointer<QAccelerometerReading>)
+
+namespace core
+{
+class SharedAccelerometer : public QObject
 {
     Q_OBJECT
 
 public:
-    AccelerometerCommon(QObject *parent = NULL);
-    ~AccelerometerCommon();
+    static SharedAccelerometer& instance();
 
     void start();
     void stop();
-
-    QAccelerometerReading *reading() const;
 
     qreal getMinDelay() const;
     qreal getMinValue() const;
     qreal getMaxValue() const;
     qreal getResolution() const;
 
-    static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
-
 Q_SIGNALS:
-    void accelerometerReadingChanged();
+    void accelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
 
 private:
+    SharedAccelerometer(QObject *parent = NULL);
+
     UASensorsAccelerometer *m_accelerometer;
-    QAccelerometerReading *m_reading;
+
     qreal m_minDelay;
     qreal m_minValue;
     qreal m_maxValue;
     qreal m_resolution;
 
-    // Gets called by the Aal sensor wrapper when there is a new accelerometer reading
+    // Gets called by the underlying platform when there is a new accelerometer reading
+    static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);
     void onAccelerometerReading(UASAccelerometerEvent *event);
 };
+}
 
-#endif
+#endif // CORE_SHARED_ACCELEROMETER_H
