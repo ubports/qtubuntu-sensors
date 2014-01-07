@@ -1,5 +1,4 @@
-include(../coverage.pri)
-include(../qtubuntu-sensors.pro)
+include(../../coverage.pri)
 
 TEMPLATE = lib
 CONFIG += plugin

@@ -33,7 +33,7 @@ class SensorPlugins
           public QSensorBackendFactory
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.qt-project.Qt.QSensorPluginInterface/1.0" FILE "plugin.json")
+    Q_PLUGIN_METADATA(IID "com.qt-project.Qt.QSensorPluginInterface/1.0" FILE "sensors.json")
     Q_INTERFACES(QSensorPluginInterface)
 
 public:

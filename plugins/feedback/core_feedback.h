@@ -20,12 +20,7 @@
 #define CORE_FEEDBACK_H
 
 #include <QtCore/QList>
-#include <QtCore/QVector>
-#include <QtCore/QHash>
 #include <QtCore/QObject>
-#include <QtCore/QMutex>
-#include <QtCore/QTimer>
-#include <QtCore/QProcess>
 
 #include <qfeedbackplugininterfaces.h>
 

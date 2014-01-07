@@ -1,5 +1,4 @@
-include(../coverage.pri)
-include(../qtubuntu-sensors.pro)
+include(../../coverage.pri)
 
 TEMPLATE = lib
 CONFIG += plugin
@@ -28,6 +27,6 @@ SOURCES += \
 target.path += $$[QT_INSTALL_PLUGINS]/sensors
 INSTALLS += target
 
-OTHER_FILES += plugin.json
+OTHER_FILES += sensors.json
 
 QMAKE_RPATHDIR = $$[QT_INSTALL_LIBS]/qtubuntu-sensors

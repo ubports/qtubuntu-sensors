@@ -122,7 +122,7 @@ void core::Feedback::vibrateOnce(const QFeedbackEffect* effect)
             effectiveDuration = 150;
     }
 
-    vibrator(150);
+    vibrator(effectiveDuration);
 }
 
 void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
