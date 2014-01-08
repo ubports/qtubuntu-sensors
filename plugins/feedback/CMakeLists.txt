@@ -14,7 +14,7 @@ add_library(
 
 # Ideally, we would read the plugin installation location from cmake
 # but this does not work currently.
-set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/feedback")
+set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/plugins/feedback")
 # get_target_property(PLUGIN_LOCATION Qt5::Feedback PLUGIN_LOCATION)
 
 message(STATUS "Installing Qt5 feedback plugin to: ${PLUGIN_INSTALL_LOCATION}")

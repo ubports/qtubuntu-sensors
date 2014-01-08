@@ -24,7 +24,7 @@ add_library(
 
 # Ideally, we would read the plugin installation location from cmake
 # but this does not work currently.
-set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/sensors")
+set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/plugins/sensors")
 # get_target_property(PLUGIN_LOCATION Qt5::Sensors PLUGIN_LOCATION)
 
 message(STATUS "Installing Qt5 sensors plugin to: ${PLUGIN_INSTALL_LOCATION}")
