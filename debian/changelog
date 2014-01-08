@@ -1,3 +1,24 @@
+qtubuntu-sensors (0.6+14.04.20140108.2-0ubuntu1) trusty; urgency=low
+
+  [ thomas-voss ]
+  * Remove obsolete symbols file. Add a TODO in
+    core::SharedAccelerometer for switching to an object-pool for
+    allocation of sensor readings. Refactor core-based sensor backend
+    implementation. Fix numerous bugs for the orientation and
+    acceleration sensor. Make sure that signal-slot connections are
+    queued as sensor callbacks can happen on any thread. Add a
+    configuration file (place in /etc/xdg/QtProject) to select the
+    ubuntu sensors by default.
+
+  [ Christian Dywan ]
+  * Keep vibrator around to prevent it from being recycled too fast.
+    (LP: #1241735)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 42
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 08 Jan 2014 17:17:24 +0000
+
 qtubuntu-sensors (0.6+14.04.20131024.4-0ubuntu1) trusty; urgency=low
 
   [ Robert Bruce Park ]
