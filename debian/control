@@ -25,5 +25,6 @@ Multi-Arch: same
 Depends: ${misc:Depends},
          ${shlibs:Depends},
 Breaks: libqt5location5-plugins (<< 5.0~git20130805-0ubuntu4)
+Replaces: libqt5location5-plugins (<< 5.0~git20130805-0ubuntu4)
 Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend
