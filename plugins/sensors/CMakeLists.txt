@@ -33,11 +33,13 @@ qt5_use_modules(qtubuntu_sensors_plugins Core Sensors)
 
 target_link_libraries(
   qtubuntu_sensors_plugins 
+
+  ${CMAKE_THREAD_LIBS_INIT}
+
   Qt5::Core 
   Qt5::Sensors
 
-  ${UBUNTU_PLATFORM_API_LIBRARIES}
-)
+  ${UBUNTU_PLATFORM_API_LIBRARIES})
 
 install(
   TARGETS qtubuntu_sensors_plugins

@@ -21,7 +21,13 @@ message(STATUS "Installing Qt5 feedback plugin to: ${PLUGIN_INSTALL_LOCATION}")
 
 qt5_use_modules(qtfeedback_ubuntu Core Feedback)
 
-target_link_libraries(qtfeedback_ubuntu Qt5::Core Qt5::Feedback)
+target_link_libraries(
+  qtfeedback_ubuntu
+
+  ${CMAKE_THREAD_LIBS_INIT}
+
+  Qt5::Core
+  Qt5::Feedback)
 
 install(
   TARGETS qtfeedback_ubuntu

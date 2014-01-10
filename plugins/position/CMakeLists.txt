@@ -31,6 +31,8 @@ qt5_use_modules(qtposition_ubuntu Core Location)
 target_link_libraries(
   qtposition_ubuntu
 
+  ${CMAKE_THREAD_LIBS_INIT}
+
   Qt5::Core 
   Qt5::Location
 
