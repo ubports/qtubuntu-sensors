@@ -23,6 +23,7 @@
 
 #include <QTemporaryFile>
 #include <QtSensors/QAccelerometer>
+#include <QtSensors/QOrientationSensor>
 
 using namespace std;
 
@@ -66,4 +67,23 @@ TESTP_F(APITest, CreateAccelerator, {
     qoutputrange r = sensor.outputRanges()[0];
     EXPECT_EQ(r.minimum, 0.5f);
     EXPECT_EQ(r.maximum, 1000.0f);
+})
+
+TESTP_F(APITest, CreateOrientation, {
+    // orientation sensor is based on acceleration
+    set_data("create accel -500 500 1");
+
+    QOrientationSensor sensor;
+    // connect to the qtubuntu-sensors backend; default is dummy, and there
+    // does not seem to be a way to use data/Sensors.conf
+    sensor.setIdentifier("core.orientation");
+    EXPECT_EQ(sensor.start(), true);
+    EXPECT_EQ(sensor.error(), 0);
+    EXPECT_EQ(sensor.isConnectedToBackend(), true);
+    EXPECT_EQ(sensor.identifier(), "core.orientation");
+
+    //EXPECT_EQ(sensor.outputRange(), 0); // FIXME: bug in code
+    qoutputrange r = sensor.outputRanges()[0];
+    EXPECT_EQ(r.minimum, -500.0f);
+    EXPECT_EQ(r.maximum, 500.0f);
 })
