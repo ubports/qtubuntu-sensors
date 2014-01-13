@@ -62,11 +62,18 @@ TESTP_F(APITest, CreateAccelerator, {
     EXPECT_EQ(sensor.error(), 0);
     EXPECT_EQ(sensor.isConnectedToBackend(), true);
     EXPECT_EQ(sensor.identifier(), "core.accelerometer");
+    EXPECT_EQ(sensor.accelerationMode(), QAccelerometer::Combined);
 
     //EXPECT_EQ(sensor.outputRange(), 0); // FIXME: bug in code
     qoutputrange r = sensor.outputRanges()[0];
     EXPECT_EQ(r.minimum, 0.5f);
     EXPECT_EQ(r.maximum, 1000.0f);
+
+    // defined initial values
+    auto reading = sensor.reading();
+    EXPECT_EQ(reading->x(), 0.0);
+    EXPECT_EQ(reading->y(), 0.0);
+    EXPECT_EQ(reading->z(), 0.0);
 })
 
 TESTP_F(APITest, CreateOrientation, {
@@ -86,4 +93,7 @@ TESTP_F(APITest, CreateOrientation, {
     qoutputrange r = sensor.outputRanges()[0];
     EXPECT_EQ(r.minimum, -500.0f);
     EXPECT_EQ(r.maximum, 500.0f);
+
+    // defined initial value
+    EXPECT_EQ(sensor.reading()->orientation(), QOrientationReading::Undefined);
 })
