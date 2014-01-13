@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <QMetaType>
 
+Q_DECLARE_METATYPE(QSharedPointer<QAccelerometerReading>)
+
 core::SharedAccelerometer& core::SharedAccelerometer::instance()
 {
     static core::SharedAccelerometer instance;

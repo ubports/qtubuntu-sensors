@@ -23,8 +23,6 @@
 #include <QObject>
 #include <QSharedPointer>
 
-Q_DECLARE_METATYPE(QSharedPointer<QAccelerometerReading>)
-
 namespace core
 {
 class SharedAccelerometer : public QObject

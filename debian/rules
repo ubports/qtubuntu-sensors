@@ -8,7 +8,7 @@ export DH_OPTIONS
 export QT_QPA_PLATFORM = minimal
 
 %:
-	dh $@ --parallel --buildsystem=qmake
+	dh $@ --parallel
 
 override_dh_install:
 	dh_install --fail-missing
