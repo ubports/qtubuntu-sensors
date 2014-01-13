@@ -19,10 +19,14 @@ if (QTUBUNTU_SENSORS_WERROR)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif(QTUBUNTU_SENSORS_WERROR)
 
+# enable tests with gtest
 include(CTest)
+set(GTEST_ROOT /usr/src/gtest)
+add_subdirectory(${GTEST_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/gtest)
 
 find_package(Threads REQUIRED)
 
 add_definitions(-DQT_PLUGIN)
 
 add_subdirectory(plugins)
+add_subdirectory(tests)
