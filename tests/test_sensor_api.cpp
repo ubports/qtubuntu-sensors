@@ -17,12 +17,11 @@
  */
 
 #include <cstdlib>
-#include <cstdio>
-#include <queue>
 
 #include <core/testing/fork_and_run.h>
 #include "gtest/gtest.h"
 
+#include <QTemporaryFile>
 #include <QtSensors/QAccelerometer>
 
 using namespace std;
@@ -32,29 +31,23 @@ class APITest : public testing::Test
   protected:
     virtual void SetUp()
     {
-        snprintf(data_file, sizeof(data_file), "%s", "/tmp/sensor_test.XXXXXX");
-        data_fd = mkstemp(data_file);
-        if (data_fd < 0) {
-            perror("mkstemp");
-            abort();
-        }
-        setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", data_file, 1);
+        Q_ASSERT(data_file.open());
+        setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", qPrintable(data_file.fileName()), 1);
         setenv("UBUNTU_PLATFORM_API_BACKEND", "libubuntu_application_api_test.so.1", 1);
     }
 
     virtual void TearDown()
     {
-        unlink(data_file);
+        data_file.remove();
     }
 
     void set_data(const char* data)
     {
-        Q_ASSERT(write(data_fd, data, strlen(data)) > 0);
-        fsync(data_fd);
+        data_file.write(data);
+        data_file.flush();
     }
 
-    char data_file[100];
-    int data_fd;
+    QTemporaryFile data_file;
 };
 
 TESTP_F(APITest, CreateAccelerator, {
