@@ -165,3 +165,40 @@ TESTP_F(APITest, AcceleratorEvents, {
     check_accel_event(1.5, 400, 0.5, 210);
     check_accel_event(-1.0, -9.8, -0.5, 510);
 })
+
+TESTP_F(APITest, AcceleratorReadings, {
+    set_data("create accel -500 500 0.1\n"
+             "10 accel 0 -9.9 0\n"
+             "200 accel 1.5 400 0.5\n"
+             "300 accel -1 -9.8 -0.5\n");
+
+    // connect to the qtubuntu-sensors backend; default is dummy, and there
+    // does not seem to be a way to use data/Sensors.conf
+    accel.setIdentifier("core.accelerometer");
+
+    EXPECT_EQ(accel.start(), true);
+
+    // initial value
+    auto reading = accel.reading();
+    EXPECT_FLOAT_EQ(reading->x(), 0.0);
+    EXPECT_FLOAT_EQ(reading->y(), 0.0);
+    EXPECT_FLOAT_EQ(reading->z(), 0.0);
+
+    run_events(50);
+    reading = accel.reading();
+    EXPECT_FLOAT_EQ(reading->x(), 0.0);
+    EXPECT_FLOAT_EQ(reading->y(), -9.9);
+    EXPECT_FLOAT_EQ(reading->z(), 0.0);
+
+    run_events(200);
+    reading = accel.reading();
+    EXPECT_FLOAT_EQ(reading->x(), 1.5);
+    EXPECT_FLOAT_EQ(reading->y(), 400);
+    EXPECT_FLOAT_EQ(reading->z(), 0.5);
+
+    run_events(350);
+    reading = accel.reading();
+    EXPECT_FLOAT_EQ(reading->x(), -1);
+    EXPECT_FLOAT_EQ(reading->y(), -9.8);
+    EXPECT_FLOAT_EQ(reading->z(), -0.5);
+})
