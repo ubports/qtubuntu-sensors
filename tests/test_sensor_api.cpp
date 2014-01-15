@@ -32,14 +32,15 @@
 
 using namespace std;
 
+// structures for logging received events from signals
 struct AccelEvent {
-   qreal x, y, z;
-   std::chrono::time_point<std::chrono::system_clock> time;
+    qreal x, y, z;
+    chrono::time_point<chrono::system_clock> time;
 };
 
 struct OrientationEvent {
     QOrientationReading::Orientation orientation;
-   std::chrono::time_point<std::chrono::system_clock> time;
+    chrono::time_point<chrono::system_clock> time;
 };
 
 
@@ -99,7 +100,7 @@ class APITest : public testing::Test
         EXPECT_LE(delay, ms + 20);
     }
 
-    // check the next event in orientation_events for expected values and delay
+    // check the next event in orientation_events for expected value and delay
     void check_orientation_event(QOrientationReading::Orientation value, unsigned ms)
     {
         auto e = orientation_events.front();
@@ -114,7 +115,7 @@ class APITest : public testing::Test
     QTemporaryFile data_file;
     QAccelerometer accel_sensor;
     QOrientationSensor orientation_sensor;
-    std::chrono::time_point<std::chrono::system_clock> start_time;
+    chrono::time_point<chrono::system_clock> start_time;
     queue<struct AccelEvent> accel_events;
     queue<struct OrientationEvent> orientation_events;
 };
