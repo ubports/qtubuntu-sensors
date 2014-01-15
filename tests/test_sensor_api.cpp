@@ -269,3 +269,29 @@ TESTP_F(APITest, OrientationEvents, {
     check_orientation_event(QOrientationReading::FaceDown, 520);
 })
 
+TESTP_F(APITest, OrientationReading, {
+    set_data("create accel -500 500 0.1\n"
+             "10 accel 0 9.8 0\n"  // TopUp
+             "20 accel 6.9 6.9 0\n"  // turning left
+             "20 accel 8.1 2.3 0\n"  // almost turned left, should trigger RightUp
+             );
+
+    orientation_sensor.setIdentifier("core.orientation");
+
+    EXPECT_EQ(orientation_sensor.start(), true);
+
+    // initial value
+    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::Undefined);
+
+    // TopUp after first event
+    run_events(20);
+    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::TopUp);
+
+    // not changed for "turning left" yet
+    run_events(20);
+    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::TopUp);
+
+    // but changed after "almost turned left"
+    run_events(20);
+    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::RightUp);
+})
