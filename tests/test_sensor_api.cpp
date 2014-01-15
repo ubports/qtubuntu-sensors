@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <chrono>
 #include <queue>
+#include <iostream>
 
 #include <core/testing/fork_and_run.h>
 #include "gtest/gtest.h"
@@ -36,6 +37,11 @@ struct AccelEvent {
    std::chrono::time_point<std::chrono::system_clock> time;
 };
 
+struct OrientationEvent {
+    QOrientationReading::Orientation orientation;
+   std::chrono::time_point<std::chrono::system_clock> time;
+};
+
 
 class APITest : public testing::Test
 {
@@ -46,9 +52,11 @@ class APITest : public testing::Test
         setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", qPrintable(data_file.fileName()), 1);
         setenv("UBUNTU_PLATFORM_API_BACKEND", "libubuntu_application_api_test.so.1", 1);
 
-        // ensure the queue is clear
+        // ensure the queues are clear
         while (accel_events.size() > 0)
             accel_events.pop();
+        while (orientation_events.size() > 0)
+            orientation_events.pop();
     }
 
     virtual void TearDown()
@@ -91,10 +99,24 @@ class APITest : public testing::Test
         EXPECT_LE(delay, ms + 20);
     }
 
+    // check the next event in orientation_events for expected values and delay
+    void check_orientation_event(QOrientationReading::Orientation value, unsigned ms)
+    {
+        auto e = orientation_events.front();
+        orientation_events.pop();
+        EXPECT_EQ(e.orientation, value);
+        // allow -5 to +10 ms slack in event time
+        auto delay = chrono::duration_cast<chrono::milliseconds>(e.time - start_time).count();
+        EXPECT_GE(delay, ms - 10);
+        EXPECT_LE(delay, ms + 20);
+    }
+
     QTemporaryFile data_file;
-    QAccelerometer accel;
+    QAccelerometer accel_sensor;
+    QOrientationSensor orientation_sensor;
     std::chrono::time_point<std::chrono::system_clock> start_time;
     queue<struct AccelEvent> accel_events;
+    queue<struct OrientationEvent> orientation_events;
 };
 
 TESTP_F(APITest, CreateAccelerator, {
@@ -147,14 +169,14 @@ TESTP_F(APITest, AcceleratorEvents, {
 
     // connect to the qtubuntu-sensors backend; default is dummy, and there
     // does not seem to be a way to use data/Sensors.conf
-    accel.setIdentifier("core.accelerometer");
+    accel_sensor.setIdentifier("core.accelerometer");
 
-    QObject::connect(&accel, &QAccelerometer::readingChanged, [=]() { 
-        auto r = accel.reading();
+    QObject::connect(&accel_sensor, &QAccelerometer::readingChanged, [=]() { 
+        auto r = accel_sensor.reading();
         accel_events.push({r->x(), r->y(), r->z(), chrono::system_clock::now()});
     });
 
-    EXPECT_EQ(accel.start(), true);
+    EXPECT_EQ(accel_sensor.start(), true);
 
     start_time = chrono::system_clock::now();
     run_events(550);
@@ -174,31 +196,76 @@ TESTP_F(APITest, AcceleratorReadings, {
 
     // connect to the qtubuntu-sensors backend; default is dummy, and there
     // does not seem to be a way to use data/Sensors.conf
-    accel.setIdentifier("core.accelerometer");
+    accel_sensor.setIdentifier("core.accelerometer");
 
-    EXPECT_EQ(accel.start(), true);
+    EXPECT_EQ(accel_sensor.start(), true);
 
     // initial value
-    auto reading = accel.reading();
+    auto reading = accel_sensor.reading();
     EXPECT_FLOAT_EQ(reading->x(), 0.0);
     EXPECT_FLOAT_EQ(reading->y(), 0.0);
     EXPECT_FLOAT_EQ(reading->z(), 0.0);
 
     run_events(50);
-    reading = accel.reading();
+    reading = accel_sensor.reading();
     EXPECT_FLOAT_EQ(reading->x(), 0.0);
     EXPECT_FLOAT_EQ(reading->y(), -9.9);
     EXPECT_FLOAT_EQ(reading->z(), 0.0);
 
     run_events(200);
-    reading = accel.reading();
+    reading = accel_sensor.reading();
     EXPECT_FLOAT_EQ(reading->x(), 1.5);
     EXPECT_FLOAT_EQ(reading->y(), 400);
     EXPECT_FLOAT_EQ(reading->z(), 0.5);
 
     run_events(350);
-    reading = accel.reading();
+    reading = accel_sensor.reading();
     EXPECT_FLOAT_EQ(reading->x(), -1);
     EXPECT_FLOAT_EQ(reading->y(), -9.8);
     EXPECT_FLOAT_EQ(reading->z(), -0.5);
 })
+
+TESTP_F(APITest, OrientationEvents, {
+        /* test some "parallel to coordinate axes" conditions, as well as some
+         * ~ 45 degrees angles; we want a hysteresis there, i. e. it should not
+         * flip back and forth when wiggling around the diagonals but only when
+         * it's mostly pointing towards an axis
+         * coordinate system:
+         * http://qt-project.org/doc/qt-5.1/qtsensors/qaccelerometerreading.html
+         */
+    set_data("create accel -500 500 0.1\n"
+             "10 accel 0 9.8 0\n"  // TopUp
+             "100 accel 6.9 6.9 0\n"  // turning left
+             "150 accel 8.1 2.3 0\n"  // almost turned left, should trigger RightUp
+             "50 accel -7.1 6.9 0\n"  // turn right, wiggle around diagonal several times
+             "30 accel -6.5 7.1 0\n" 
+             "30 accel -7.0 6.0 0\n"
+             "30 accel -7.0 6.0 0\n"
+             "30 accel -8.0 3.0 0\n"  // finally turn right enough to trigger LeftUp
+             "30 accel 0 -9.8 0\n"    // TopDown
+             "30 accel 0 0 9.8\n"    // FaceUp
+             "30 accel 0 0 -9.8\n"    // FaceDown
+             );
+
+    orientation_sensor.setIdentifier("core.orientation");
+
+    QObject::connect(&orientation_sensor, &QOrientationSensor::readingChanged, [=]() { 
+        auto r = orientation_sensor.reading();
+        orientation_events.push({r->orientation(), chrono::system_clock::now()});
+    });
+
+    EXPECT_EQ(orientation_sensor.start(), true);
+
+    start_time = chrono::system_clock::now();
+    run_events(550);  // must be long enough to catch all events
+
+    EXPECT_EQ(orientation_events.size(), 6);
+
+    check_orientation_event(QOrientationReading::TopUp, 10);
+    check_orientation_event(QOrientationReading::RightUp, 260);
+    check_orientation_event(QOrientationReading::LeftUp, 430);
+    check_orientation_event(QOrientationReading::TopDown, 460);
+    check_orientation_event(QOrientationReading::FaceUp, 490);
+    check_orientation_event(QOrientationReading::FaceDown, 520);
+})
+
