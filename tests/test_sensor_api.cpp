@@ -14,6 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Authored by: Martin Pitt <martin.pitti@ubuntu.com>
+ *
+ * This test suite uses the simulated sensor test backend from
+ * libubuntu-application-api-test1. Please see
+ * /usr/share/doc/libubuntu-application-api-test1/README.md for how to use it
+ * and the format of the sensor data files.
  */
 
 #include <cstdlib>
