@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include <core/testing/fork_and_run.h>
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 
 #include <QTemporaryFile>
 #include <QThread>
