@@ -4,7 +4,10 @@ Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
                cmake,
+               libgtest-dev,
                libplatform-api1-dev,
+               libprocess-cpp-dev (>= 0.0.1+14.04.20131212),
+               libubuntu-application-api-test1,
                pkg-config,
                qt5-default,
                qtbase5-dev,
