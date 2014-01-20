@@ -114,7 +114,7 @@ class APITest : public testing::Test
         // allow -5 to +10 ms slack in event time
         auto delay = chrono::duration_cast<chrono::milliseconds>(e.time - start_time).count();
         EXPECT_GE(delay, ms - 10);
-        EXPECT_LE(delay, ms + 20);
+        EXPECT_LE(delay, ms + 40);
     }
 
     QTemporaryFile data_file;
