@@ -37,6 +37,9 @@ class GeoPositionInfoSourceFactory
 public:
     QGeoPositionInfoSource *positionInfoSource(QObject *parent);
     QGeoSatelliteInfoSource *satelliteInfoSource(QObject *parent);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 0))
+    QGeoAreaMonitorSource *areaMonitor(QObject *parent);
+#endif
 };
 }
 

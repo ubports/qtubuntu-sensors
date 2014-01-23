@@ -30,3 +30,12 @@ QGeoSatelliteInfoSource *core::GeoPositionInfoSourceFactory::satelliteInfoSource
     Q_UNUSED(parent);
     return 0;
 }
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 2, 0))
+QGeoAreaMonitorSource *core::GeoPositionInfoSourceFactory::areaMonitor(QObject *parent)
+{
+    Q_UNUSED(parent);
+    return 0;
+}
+#endif
+
