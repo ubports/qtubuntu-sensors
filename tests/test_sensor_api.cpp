@@ -54,7 +54,8 @@ class APITest : public testing::Test
   protected:
     virtual void SetUp()
     {
-        Q_ASSERT(data_file.open());
+        bool openResult = data_file.open();
+        EXPECT_EQ(openResult, true);
         setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", qPrintable(data_file.fileName()), 1);
         setenv("UBUNTU_PLATFORM_API_BACKEND", "libubuntu_application_api_test.so.1", 1);
 
