@@ -48,8 +48,13 @@ struct OrientationEvent {
     chrono::time_point<chrono::system_clock> time;
 };
 
+/*******************************************
+ *
+ * Tests with simulated sensor backend
+ *
+ *******************************************/
 
-class APITest : public testing::Test
+class SimBackendTest : public testing::Test
 {
   protected:
     virtual void SetUp()
@@ -126,7 +131,7 @@ class APITest : public testing::Test
     queue<struct OrientationEvent> orientation_events;
 };
 
-TESTP_F(APITest, CreateAccelerator, {
+TESTP_F(SimBackendTest, CreateAccelerometer, {
     set_data("create accel 0.5 1000 0.1");
 
     QAccelerometer sensor;
@@ -151,7 +156,7 @@ TESTP_F(APITest, CreateAccelerator, {
     EXPECT_FLOAT_EQ(reading->z(), 0.0);
 })
 
-TESTP_F(APITest, CreateOrientation, {
+TESTP_F(SimBackendTest, CreateOrientation, {
     // orientation sensor is based on acceleration
     set_data("create accel -500 500 1");
 
@@ -168,7 +173,7 @@ TESTP_F(APITest, CreateOrientation, {
     EXPECT_EQ(sensor.reading()->orientation(), QOrientationReading::Undefined);
 })
 
-TESTP_F(APITest, AcceleratorEvents, {
+TESTP_F(SimBackendTest, AccelerometerEvents, {
     set_data("create accel -500 500 0.1\n"
              "10 accel 0 -9.9 0\n"
              "200 accel 1.5 400 0.5\n"
@@ -195,7 +200,7 @@ TESTP_F(APITest, AcceleratorEvents, {
     check_accel_event(-1.0, -9.8, -0.5, 510);
 })
 
-TESTP_F(APITest, AcceleratorReadings, {
+TESTP_F(SimBackendTest, AccelerometerReadings, {
     set_data("create accel -500 500 0.1\n"
              "10 accel 0 -9.9 0\n"
              "200 accel 1.5 400 0.5\n"
@@ -232,7 +237,7 @@ TESTP_F(APITest, AcceleratorReadings, {
     EXPECT_FLOAT_EQ(reading->z(), -0.5);
 })
 
-TESTP_F(APITest, OrientationEvents, {
+TESTP_F(SimBackendTest, OrientationEvents, {
         /* test some "parallel to coordinate axes" conditions, as well as some
          * ~ 45 degrees angles; we want a hysteresis there, i. e. it should not
          * flip back and forth when wiggling around the diagonals but only when
@@ -276,7 +281,7 @@ TESTP_F(APITest, OrientationEvents, {
     check_orientation_event(QOrientationReading::FaceDown, 520);
 })
 
-TESTP_F(APITest, OrientationReading, {
+TESTP_F(SimBackendTest, OrientationReading, {
     set_data("create accel -500 500 0.1\n"
              "10 accel 0 9.8 0\n"  // TopUp
              "20 accel 6.9 6.9 0\n"  // turning left
@@ -302,3 +307,106 @@ TESTP_F(APITest, OrientationReading, {
     run_events(20);
     EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::RightUp);
 })
+
+
+/*******************************************
+ *
+ * Tests with real sensor backend
+ *
+ *******************************************/
+
+class RealBackendTest : public testing::Test
+{
+    virtual void SetUp()
+    {
+        unsetenv("UBUNTU_PLATFORM_API_BACKEND");
+    }
+};
+
+TESTP_F(RealBackendTest, CreateAccelerometer, {
+    QAccelerometer sensor;
+    // connect to the qtubuntu-sensors backend; default is dummy, and there
+    // does not seem to be a way to use data/Sensors.conf
+    sensor.setIdentifier("core.accelerometer");
+
+    // this can succeed for fail depending on whether the hardware we run this
+    // on actually exists; but it should never crash
+    if (sensor.start()) {
+        EXPECT_EQ(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), true);
+        EXPECT_EQ(sensor.accelerationMode(), QAccelerometer::Combined);
+    } else {
+        EXPECT_NE(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), false);
+    }
+
+    EXPECT_EQ(sensor.identifier(), "core.accelerometer");
+})
+
+TESTP_F(RealBackendTest, CreateOrientation, {
+    QOrientationSensor sensor;
+    // connect to the qtubuntu-sensors backend; default is dummy, and there
+    // does not seem to be a way to use data/Sensors.conf
+    sensor.setIdentifier("core.orientation");
+
+    // this can succeed for fail depending on whether the hardware we run this
+    // on actually exists; but it should never crash
+    if (sensor.start()) {
+        EXPECT_EQ(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), true);
+    } else {
+        EXPECT_NE(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), false);
+    }
+
+    EXPECT_EQ(sensor.identifier(), "core.orientation");
+})
+
+/*******************************************
+ *
+ * Tests with default sensor backend
+ *
+ *******************************************/
+
+class DefaultBackendTest : public testing::Test
+{
+    virtual void SetUp()
+    {
+        unsetenv("UBUNTU_PLATFORM_API_BACKEND");
+    }
+};
+
+TESTP_F(DefaultBackendTest, CreateAccelerometer, {
+    QAccelerometer sensor;
+    // don't set any particular identifier here
+
+    // this can succeed for fail depending on whether the hardware we run this
+    // on actually exists; but it should never crash
+    if (sensor.start()) {
+        EXPECT_EQ(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), true);
+    } else {
+        EXPECT_NE(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), false);
+    }
+
+    cout << "default backend connected to " << sensor.identifier().constData() << endl;
+})
+
+TESTP_F(DefaultBackendTest, CreateOrientation, {
+    QOrientationSensor sensor;
+    // don't set any particular identifier here
+
+    // this can succeed for fail depending on whether the hardware we run this
+    // on actually exists; but it should never crash
+    if (sensor.start()) {
+        EXPECT_EQ(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), true);
+    } else {
+        EXPECT_NE(sensor.error(), 0);
+        EXPECT_EQ(sensor.isConnectedToBackend(), false);
+    }
+
+    cout << "default backend connected to " << sensor.identifier().constData() << endl;
+})
+
