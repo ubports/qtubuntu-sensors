@@ -1,3 +1,17 @@
+qtubuntu-sensors (0.6+14.04.20140213-0ubuntu1) trusty; urgency=low
+
+  [ Martin Pitt ]
+  * Add integration tests for the QtSensor API → qtubuntu-sensors →
+    platform-api (with simulated sensor backend).
+  * Fix crash if there are no available sensors. (LP: #1272294)
+
+  [ Albert Astals ]
+  * Make it compile with Qt 5.2 (LP: #1271415). (LP: #1271415)
+  * Q_ASSERT -> EXPECT_EQ Since sometimes Q_ASSERT can be compiled out
+    and thus the test would fail. (LP: #1271886)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 13 Feb 2014 01:44:53 +0000
+
 qtubuntu-sensors (0.6+14.04.20140113.1-0ubuntu1) trusty; urgency=low
 
   [ thomas-voss ]
