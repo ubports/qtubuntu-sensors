@@ -52,6 +52,7 @@ private:
     qreal m_minValue;
     qreal m_maxValue;
     qreal m_resolution;
+    bool m_available;
 
     // Gets called by the underlying platform when there is a new accelerometer reading
     static void onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context);

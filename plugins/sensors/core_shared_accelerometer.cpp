@@ -32,10 +32,13 @@ core::SharedAccelerometer::SharedAccelerometer(QObject *parent)
       m_minDelay(-1),
       m_minValue(0.0),
       m_maxValue(0.0),
-      m_resolution(0.0)
+      m_resolution(0.0),
+      m_available(false)
 {
     qRegisterMetaType<QSharedPointer<QAccelerometerReading> >("QSharedPointer<QAccelerometerReading>");
     m_accelerometer = ua_sensors_accelerometer_new();
+    if (m_accelerometer == NULL)
+        return;
 
     ua_sensors_accelerometer_set_reading_cb(
                 m_accelerometer,
@@ -47,16 +50,20 @@ core::SharedAccelerometer::SharedAccelerometer(QObject *parent)
     m_minValue = static_cast<qreal>(ua_sensors_accelerometer_get_min_value(m_accelerometer));
     m_maxValue = static_cast<qreal>(ua_sensors_accelerometer_get_max_value(m_accelerometer));
     m_resolution = static_cast<qreal>(ua_sensors_accelerometer_get_resolution(m_accelerometer));
+    m_available = true;
+
 }
 
 void core::SharedAccelerometer::start()
 {
-    ua_sensors_accelerometer_enable(m_accelerometer);
+    if (m_available)
+        ua_sensors_accelerometer_enable(m_accelerometer);
 }
 
 void core::SharedAccelerometer::stop()
 {
-    ua_sensors_accelerometer_disable(m_accelerometer);
+    if (m_available)
+        ua_sensors_accelerometer_disable(m_accelerometer);
 }
 
 qreal core::SharedAccelerometer::getMinDelay() const
