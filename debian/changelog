@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.6+14.04.20140304-0ubuntu1) trusty; urgency=low
+
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Mar 2014 12:45:32 +0000
+
 qtubuntu-sensors (0.6+14.04.20140213-0ubuntu1) trusty; urgency=low
 
   [ Martin Pitt ]
