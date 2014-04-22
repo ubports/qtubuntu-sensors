@@ -56,10 +56,19 @@ struct OrientationEvent {
 
 class SimBackendTest : public testing::Test
 {
+  public:
+    SimBackendTest()
+    {
+        QCoreApplication::setLibraryPaths(QStringList("../plugins/"));
+	
+        accel_sensor = new QAccelerometer();
+        orientation_sensor = new QOrientationSensor();
+    }
+
   protected:
     virtual void SetUp()
     {
-        bool openResult = data_file.open();
+	bool openResult = data_file.open();
         EXPECT_EQ(openResult, true);
         setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", qPrintable(data_file.fileName()), 1);
         setenv("UBUNTU_PLATFORM_API_BACKEND", "libubuntu_application_api_test.so.1", 1);
@@ -124,8 +133,8 @@ class SimBackendTest : public testing::Test
     }
 
     QTemporaryFile data_file;
-    QAccelerometer accel_sensor;
-    QOrientationSensor orientation_sensor;
+    QAccelerometer *accel_sensor;
+    QOrientationSensor *orientation_sensor;
     chrono::time_point<chrono::system_clock> start_time;
     queue<struct AccelEvent> accel_events;
     queue<struct OrientationEvent> orientation_events;
@@ -181,14 +190,14 @@ TESTP_F(SimBackendTest, AccelerometerEvents, {
 
     // connect to the qtubuntu-sensors backend; default is dummy, and there
     // does not seem to be a way to use data/Sensors.conf
-    accel_sensor.setIdentifier("core.accelerometer");
-
-    QObject::connect(&accel_sensor, &QAccelerometer::readingChanged, [=]() { 
-        auto r = accel_sensor.reading();
+    accel_sensor->setIdentifier("core.accelerometer");
+    
+    QObject::connect(accel_sensor, &QAccelerometer::readingChanged, [=]() { 
+        auto r = accel_sensor->reading();
         accel_events.push({r->x(), r->y(), r->z(), chrono::system_clock::now()});
     });
 
-    EXPECT_EQ(accel_sensor.start(), true);
+    EXPECT_EQ(accel_sensor->start(), true);
 
     start_time = chrono::system_clock::now();
     run_events(550);
@@ -208,30 +217,30 @@ TESTP_F(SimBackendTest, AccelerometerReadings, {
 
     // connect to the qtubuntu-sensors backend; default is dummy, and there
     // does not seem to be a way to use data/Sensors.conf
-    accel_sensor.setIdentifier("core.accelerometer");
+    accel_sensor->setIdentifier("core.accelerometer");
 
-    EXPECT_EQ(accel_sensor.start(), true);
+    EXPECT_EQ(accel_sensor->start(), true);
 
     // initial value
-    auto reading = accel_sensor.reading();
+    auto reading = accel_sensor->reading();
     EXPECT_FLOAT_EQ(reading->x(), 0.0);
     EXPECT_FLOAT_EQ(reading->y(), 0.0);
     EXPECT_FLOAT_EQ(reading->z(), 0.0);
 
     run_events(50);
-    reading = accel_sensor.reading();
+    reading = accel_sensor->reading();
     EXPECT_FLOAT_EQ(reading->x(), 0.0);
     EXPECT_FLOAT_EQ(reading->y(), -9.9);
     EXPECT_FLOAT_EQ(reading->z(), 0.0);
 
     run_events(200);
-    reading = accel_sensor.reading();
+    reading = accel_sensor->reading();
     EXPECT_FLOAT_EQ(reading->x(), 1.5);
     EXPECT_FLOAT_EQ(reading->y(), 400);
     EXPECT_FLOAT_EQ(reading->z(), 0.5);
 
     run_events(350);
-    reading = accel_sensor.reading();
+    reading = accel_sensor->reading();
     EXPECT_FLOAT_EQ(reading->x(), -1);
     EXPECT_FLOAT_EQ(reading->y(), -9.8);
     EXPECT_FLOAT_EQ(reading->z(), -0.5);
@@ -259,14 +268,14 @@ TESTP_F(SimBackendTest, OrientationEvents, {
              "30 accel 0 0 -9.8\n"    // FaceDown
              );
 
-    orientation_sensor.setIdentifier("core.orientation");
+    orientation_sensor->setIdentifier("core.orientation");
 
-    QObject::connect(&orientation_sensor, &QOrientationSensor::readingChanged, [=]() { 
-        auto r = orientation_sensor.reading();
+    QObject::connect(orientation_sensor, &QOrientationSensor::readingChanged, [=]() { 
+        auto r = orientation_sensor->reading();
         orientation_events.push({r->orientation(), chrono::system_clock::now()});
     });
 
-    EXPECT_EQ(orientation_sensor.start(), true);
+    EXPECT_EQ(orientation_sensor->start(), true);
 
     start_time = chrono::system_clock::now();
     run_events(550);  // must be long enough to catch all events
@@ -288,24 +297,24 @@ TESTP_F(SimBackendTest, OrientationReading, {
              "20 accel 8.1 2.3 0\n"  // almost turned left, should trigger RightUp
              );
 
-    orientation_sensor.setIdentifier("core.orientation");
+    orientation_sensor->setIdentifier("core.orientation");
 
-    EXPECT_EQ(orientation_sensor.start(), true);
+    EXPECT_EQ(orientation_sensor->start(), true);
 
     // initial value
-    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::Undefined);
+    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::Undefined);
 
     // TopUp after first event
     run_events(20);
-    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::TopUp);
+    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::TopUp);
 
     // not changed for "turning left" yet
     run_events(20);
-    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::TopUp);
+    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::TopUp);
 
     // but changed after "almost turned left"
     run_events(20);
-    EXPECT_EQ(orientation_sensor.reading()->orientation(), QOrientationReading::RightUp);
+    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::RightUp);
 })
 
 
