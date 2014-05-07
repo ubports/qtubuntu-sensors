@@ -1,3 +1,15 @@
+qtubuntu-sensors (0.6+14.10.20140507-0ubuntu1) utopic; urgency=low
+
+  [ thomas-voss ]
+  * Migrate to new platform API to allow for GCC 4.8 across hybris
+    boundary.
+
+  [ Ricardo Mendoza ]
+  * Migrate to new platform API to allow for GCC 4.8 across hybris
+    boundary.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 May 2014 10:39:15 +0000
+
 qtubuntu-sensors (0.6+14.04.20140304-0ubuntu1) trusty; urgency=low
 
   * New rebuild forced
