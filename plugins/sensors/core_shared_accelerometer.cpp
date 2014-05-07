@@ -46,10 +46,18 @@ core::SharedAccelerometer::SharedAccelerometer(QObject *parent)
                 static_cast<void *>(this));
 
     // Get the minimum sensor reading delay
-    m_minDelay = static_cast<qreal>(ua_sensors_accelerometer_get_min_delay(m_accelerometer));
-    m_minValue = static_cast<qreal>(ua_sensors_accelerometer_get_min_value(m_accelerometer));
-    m_maxValue = static_cast<qreal>(ua_sensors_accelerometer_get_max_value(m_accelerometer));
-    m_resolution = static_cast<qreal>(ua_sensors_accelerometer_get_resolution(m_accelerometer));
+    m_minDelay = ua_sensors_accelerometer_get_min_delay(m_accelerometer);
+
+    float value;
+    if (ua_sensors_accelerometer_get_min_value(m_accelerometer, &value) == U_STATUS_SUCCESS)
+        m_minValue = value;
+
+    if (ua_sensors_accelerometer_get_max_value(m_accelerometer, &value) == U_STATUS_SUCCESS)
+        m_maxValue = value;
+
+    if (ua_sensors_accelerometer_get_resolution(m_accelerometer, &value) == U_STATUS_SUCCESS)
+        m_resolution = value;
+
     m_available = true;
 
 }
@@ -101,9 +109,15 @@ void core::SharedAccelerometer::onAccelerometerReading(UASAccelerometerEvent *ev
     // instances here. We could use a custom deleter for the shared pointer to put
     // instances that have been successfully delivered to slots back into the pool.
     QSharedPointer<QAccelerometerReading> reading(new QAccelerometerReading());
-    reading->setX(uas_accelerometer_event_get_acceleration_x(event));
-    reading->setY(uas_accelerometer_event_get_acceleration_y(event));
-    reading->setZ(uas_accelerometer_event_get_acceleration_z(event));
+
+    float value = -1.;
+
+    if (uas_accelerometer_event_get_acceleration_x(event, &value) == U_STATUS_SUCCESS)
+        reading->setX(value);
+    if (uas_accelerometer_event_get_acceleration_y(event, &value) == U_STATUS_SUCCESS)
+        reading->setY(value);
+    if (uas_accelerometer_event_get_acceleration_z(event, &value) == U_STATUS_SUCCESS)
+        reading->setZ(value);
 
     reading->setTimestamp(uas_accelerometer_event_get_timestamp(event));
 
