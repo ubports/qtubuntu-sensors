@@ -13,7 +13,7 @@ Build-Depends: debhelper (>= 9),
                qtbase5-dev,
                qtfeedback5-dev,
                qtlocation5-dev,
-               qtsensors5-dev,
+               libqt5sensors5-dev,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/qtubuntu-sensors
 # if you don't have have commit access to this branch but would like to upload
