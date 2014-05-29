@@ -71,7 +71,7 @@ class SimBackendTest : public testing::Test
 	bool openResult = data_file.open();
         EXPECT_EQ(openResult, true);
         setenv("UBUNTU_PLATFORM_API_SENSOR_TEST", qPrintable(data_file.fileName()), 1);
-        setenv("UBUNTU_PLATFORM_API_BACKEND", "libubuntu_application_api_test.so.1", 1);
+        setenv("UBUNTU_PLATFORM_API_BACKEND", "test", 1);
 
         // ensure the queues are clear
         while (accel_events.size() > 0)
