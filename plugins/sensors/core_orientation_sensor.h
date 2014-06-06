@@ -19,6 +19,7 @@
 
 #include <QAccelerometerReading>
 #include <QOrientationReading>
+#include <QVector>
 
 #include <qsensorbackend.h>
 
@@ -50,9 +51,21 @@ private:
     // The distance from the center, right or left, that will trigger an
     // orientation change when the user rotates the target device.
     static const float m_accelDelta;
+    static const float m_minAccel;
+    static const float m_maxAccel;
+    static const int m_maxTilt;
+    static const int m_tiltTolerance[4][2];
+
+    int m_lastX;
+    int m_lastY;
+    int m_lastZ;
+    unsigned long m_lastFilter;
 
     QOrientationReading m_reading;
     QOrientationReading m_readingCache;
+    int m_lastOrientation;
+    int m_lastRotation;
+    QVector<bool> m_directionHistory;
 };
 }
 
