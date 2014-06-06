@@ -69,7 +69,7 @@ core::OrientationSensor::OrientationSensor(QSensor *sensor)
 void core::OrientationSensor::start()
 {
     core::SharedAccelerometer::instance().start();
-    core::SharedAccelerometer::instance().setDelay(66667);
+    //core::SharedAccelerometer::instance().setDelay(66667);
 }
 
 void core::OrientationSensor::stop()
