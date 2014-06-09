@@ -18,9 +18,27 @@
 
 #include "core_shared_accelerometer.h"
 
+#include <math.h>
+
 #include <QDebug>
 
 const float core::OrientationSensor::m_accelDelta = 7.35;
+
+#define CLOCKWISE           1
+#define COUNTER_CLOCKWISE   0
+
+
+// Values taken from Android's orientation helper
+const float core::OrientationSensor::m_minAccel = 5.8;
+const float core::OrientationSensor::m_maxAccel = 13.8;
+const int core::OrientationSensor::m_maxTilt = 75;
+
+const int core::OrientationSensor::m_tiltTolerance[4][2] = {
+    { -25, 70 },
+    { -25, 65 },
+    { -25, 60 },
+    { -25, 65 }
+};
 
 core::OrientationSensor::OrientationSensor(QSensor *sensor)
     : QSensorBackend(sensor)
@@ -51,6 +69,7 @@ core::OrientationSensor::OrientationSensor(QSensor *sensor)
 void core::OrientationSensor::start()
 {
     core::SharedAccelerometer::instance().start();
+    //core::SharedAccelerometer::instance().setDelay(66667);
 }
 
 void core::OrientationSensor::stop()
@@ -58,27 +77,115 @@ void core::OrientationSensor::stop()
     core::SharedAccelerometer::instance().stop();
 }
 
+int nearestRotation = 0;
+
 void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading)
 {
-    // Interpret the accelerometer data into a meaningful orientation
-    if (reading->y() > m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::TopUp);
-    else if (reading->y() < -m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::TopDown);
-    else if (reading->x() > m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::RightUp);
-    else if (reading->x() < -m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::LeftUp);
-    else if (reading->z() > m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::FaceUp);
-    else if (reading->z() < -m_accelDelta)
-        m_reading.setOrientation(QOrientationReading::FaceDown);
+    float x = reading->x();
+    float y = reading->y();
+    float z = reading->z();
+  
+    /* 
+    unsigned long now = reading->timestamp();
+    unsigned long then = m_lastFilter;
 
-    if (m_reading.orientation() != m_readingCache.orientation())
-    {
-        // Emit readingChanged signal only if orientation actually changes
-        newReadingAvailable();
+    double timeDelta = (now-then)/1000000;
+    float alpha = timeDelta / (200 + timeDelta);
+    x = alpha * (x - m_lastX) + m_lastX;
+    y = alpha * (y - m_lastY) + m_lastY;
+    z = alpha * (z - m_lastZ) + m_lastZ;
+
+    m_lastX = x;
+    m_lastY = y;
+    m_lastZ = z;
+    m_lastFilter = now;
+    */
+
+    int orientation = (int) round((atan2(-x,y)) * 57.2957);
+
+    if (orientation < 0)
+        orientation += 360;
+
+    if (m_lastOrientation == orientation) // static hit, not considering
+        return;
+
+    m_lastOrientation = orientation;
+    
+    float magnitude = (float) sqrt(x*x + y*y + z*z);
+
+    if (magnitude < 5.8 || magnitude > 13.8) {
+        return;
     }
 
-    m_readingCache.setOrientation(m_reading.orientation());
+    int tiltAngle = (int) round(asin(z / magnitude) * 57.2957);
+
+    if (tiltAngle > 75)
+    {
+        return;
+    }
+      
+    if (m_readingCache.orientation() == QOrientationReading::Undefined)
+    {
+        m_readingCache.setOrientation(QOrientationReading::TopUp);
+        nearestRotation = 0;
+    }
+    else
+    {
+        nearestRotation = int((float)((float)orientation + 45) / 90);
+        
+        if (nearestRotation > 3)
+            nearestRotation = 0;
+
+        if (!(tiltAngle >= m_tiltTolerance[nearestRotation][0] && tiltAngle <= m_tiltTolerance[nearestRotation][1]))
+            return;
+
+        if (m_lastRotation == nearestRotation
+                || nearestRotation == (m_lastRotation + 1) % 4) {
+            int lowerBound = ((float)nearestRotation*90) - 45 + (float)45/2;
+            if (nearestRotation == 0) {
+                if (orientation >= 315 && orientation < lowerBound + 360) {
+                    return;
+                }
+            }
+            else
+            {
+                if (orientation < lowerBound) {
+                    return;
+                }
+            }
+        }
+
+        if (m_lastRotation == nearestRotation
+                || nearestRotation == (m_lastRotation + 3) % 4) {
+            int upperBound = ((float)nearestRotation*90) + 45 - (float)45/2;
+            if (nearestRotation == 0) {
+                if (orientation <= 45 && orientation > upperBound) {
+                    return;
+                }
+            }
+            else
+            {
+                if (orientation > upperBound) {
+                    return;                    
+                }
+            }
+        }
+    }
+   
+    
+    switch (nearestRotation)
+    {
+    case 0: m_reading.setOrientation(QOrientationReading::TopUp); break;
+    case 1: m_reading.setOrientation(QOrientationReading::LeftUp); break;
+    case 2: m_reading.setOrientation(QOrientationReading::TopDown); break;
+    case 3: m_reading.setOrientation(QOrientationReading::RightUp); break;
+    }
+    
+    if (m_reading.orientation() != m_readingCache.orientation())
+    {
+        newReadingAvailable();
+        m_readingCache.setOrientation(m_reading.orientation());
+    }
+
+    m_lastRotation = nearestRotation;
 }
