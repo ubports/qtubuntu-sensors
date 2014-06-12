@@ -27,11 +27,40 @@ qt5_use_modules(
   Sensors
 )
 
-# we need to call the tests with pointing to the locally built plugins
-add_test(
-  test_sensor_api
-  
-  # add QT_DEBUG_PLUGINS=1 if plugin isn't loading
-  env QT_PLUGIN_PATH=${CMAKE_BINARY_DIR}/plugins ${CMAKE_CURRENT_BINARY_DIR}/test_sensor_api
+add_executable(
+  test_sensor_api_mock
+
+  test_sensor_api_mock.cpp
 )
 
+target_link_libraries(
+  test_sensor_api_mock
+  
+  gtest
+  gtest_main
+  ${PROCESS_CPP_LIBRARIES}
+)
+
+qt5_use_modules(
+  test_sensor_api_mock
+  
+  Core
+  Sensors
+)
+
+# we need to call the tests with pointing to the locally built plugins
+add_test(
+  test_sensor_api_mock
+  
+  # add QT_DEBUG_PLUGINS=1 if plugin isn't loading
+  env QT_PLUGIN_PATH=${CMAKE_BINARY_DIR}/plugins ${CMAKE_CURRENT_BINARY_DIR}/test_sensor_api_mock
+)
+
+if(DEFINED ENV{UBUNTU_PLATFORM_API_BACKEND})
+  add_test(
+  test_sensor_api
+  
+    # add QT_DEBUG_PLUGINS=1 if plugin isn't loading
+    env QT_PLUGIN_PATH=${CMAKE_BINARY_DIR}/plugins ${CMAKE_CURRENT_BINARY_DIR}/test_sensor_api
+  )
+endif()
