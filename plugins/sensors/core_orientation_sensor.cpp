@@ -27,6 +27,7 @@ const float core::OrientationSensor::m_accelDelta = 7.35;
 #define CLOCKWISE           1
 #define COUNTER_CLOCKWISE   0
 
+#define RAD_TO_DEG(x)   (x * 57.2957)
 
 // Values taken from Android's orientation helper
 const float core::OrientationSensor::m_minAccel = 5.8;
@@ -69,7 +70,7 @@ core::OrientationSensor::OrientationSensor(QSensor *sensor)
 void core::OrientationSensor::start()
 {
     core::SharedAccelerometer::instance().start();
-    //core::SharedAccelerometer::instance().setDelay(66667);
+    core::SharedAccelerometer::instance().setDelay(66667);
 }
 
 void core::OrientationSensor::stop()
@@ -84,8 +85,11 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     float x = reading->x();
     float y = reading->y();
     float z = reading->z();
-  
-    /* 
+
+    /*
+     * Low pass filter to remove jitter.
+     * Code inspired by Android's orientation helper
+     */  
     unsigned long now = reading->timestamp();
     unsigned long then = m_lastFilter;
 
@@ -99,9 +103,8 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     m_lastY = y;
     m_lastZ = z;
     m_lastFilter = now;
-    */
 
-    int orientation = (int) round((atan2(-x,y)) * 57.2957);
+    int orientation = round(RAD_TO_DEG((atan2(-x,y))));
 
     if (orientation < 0)
         orientation += 360;
@@ -111,18 +114,19 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
 
     m_lastOrientation = orientation;
     
-    float magnitude = (float) sqrt(x*x + y*y + z*z);
+    float magnitude = sqrt(x*x + y*y + z*z);
 
-    if (magnitude < 5.8 || magnitude > 13.8) {
+    /*
+     * External acceleration and tilt decisions
+     * Some code inspired by Android's orientation helper
+     */
+    if (magnitude < 5.8 || magnitude > 13.8)
         return;
-    }
 
-    int tiltAngle = (int) round(asin(z / magnitude) * 57.2957);
+    int tiltAngle = round(RAD_TO_DEG(asin(z / magnitude)));
 
     if (tiltAngle > 75)
-    {
         return;
-    }
       
     if (m_readingCache.orientation() == QOrientationReading::Undefined)
     {
