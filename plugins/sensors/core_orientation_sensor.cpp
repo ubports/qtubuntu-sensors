@@ -120,12 +120,12 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
      * External acceleration and tilt decisions
      * Some code inspired by Android's orientation helper
      */
-    if (magnitude < 5.8 || magnitude > 13.8)
+    if (magnitude < m_minAccel || magnitude > m_maxAccel)
         return;
 
     int tiltAngle = round(RAD_TO_DEG(asin(z / magnitude)));
 
-    if (tiltAngle > 75)
+    if (tiltAngle > m_maxTilt)
         return;
       
     if (m_readingCache.orientation() == QOrientationReading::Undefined)
