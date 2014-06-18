@@ -1,3 +1,10 @@
+qtubuntu-sensors (0.6+14.10.20140618-0ubuntu1) utopic; urgency=low
+
+  [ Ricardo Mendoza ]
+  * Dont load sensors if Platform API backend isnt live
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 18 Jun 2014 14:15:31 +0000
+
 qtubuntu-sensors (0.6+14.10.20140612-0ubuntu1) utopic; urgency=low
 
   [ Ubuntu daily release ]
