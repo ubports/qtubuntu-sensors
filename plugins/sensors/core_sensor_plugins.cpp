@@ -40,6 +40,9 @@ void core::SensorPlugins::registerSensors()
 // Instantiate all sensor backends here:
 QSensorBackend* core::SensorPlugins::createBackend(QSensor *sensor)
 {
+    if (qgetenv("UBUNTU_PLATFORM_API_BACKEND").isNull())
+        return NULL;
+
     if (sensor->identifier() == core::OrientationSensor::id())
         return new core::OrientationSensor(sensor);
 
