@@ -135,7 +135,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     }
     else
     {
-        nearestRotation = int((float)((float)orientation + 45) / 90);
+        nearestRotation = (orientation + 45) / 90;
         
         if (nearestRotation > 3)
             nearestRotation = 0;
@@ -143,9 +143,13 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
         if (!(tiltAngle >= m_tiltTolerance[nearestRotation][0] && tiltAngle <= m_tiltTolerance[nearestRotation][1]))
             return;
 
+        /*
+         * Calculate rotation-hint offsets
+         * Inspired by Android code
+         */
         if (m_lastRotation == nearestRotation
                 || nearestRotation == (m_lastRotation + 1) % 4) {
-            int lowerBound = ((float)nearestRotation*90) - 45 + (float)45/2;
+            int lowerBound = (nearestRotation*90) - 45 + 45/2;
             if (nearestRotation == 0) {
                 if (orientation >= 315 && orientation < lowerBound + 360) {
                     return;
@@ -161,7 +165,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
 
         if (m_lastRotation == nearestRotation
                 || nearestRotation == (m_lastRotation + 3) % 4) {
-            int upperBound = ((float)nearestRotation*90) + 45 - (float)45/2;
+            int upperBound = (nearestRotation*90) + 45 - 45/2;
             if (nearestRotation == 0) {
                 if (orientation <= 45 && orientation > upperBound) {
                     return;
