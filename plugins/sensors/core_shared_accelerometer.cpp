@@ -94,6 +94,11 @@ qreal core::SharedAccelerometer::getResolution() const
     return m_resolution;
 }
 
+void core::SharedAccelerometer::setDelay(quint32 delay_us)
+{
+    ua_sensors_accelerometer_set_event_rate(m_accelerometer, delay_us * 1000);
+}
+
 void core::SharedAccelerometer::onAccelerometerReadingCb(UASAccelerometerEvent *event, void *context)
 {
     SharedAccelerometer* ac = static_cast<SharedAccelerometer*>(context);

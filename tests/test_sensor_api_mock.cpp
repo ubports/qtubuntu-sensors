@@ -246,56 +246,21 @@ TESTP_F(SimBackendTest, AccelerometerReadings, {
     EXPECT_FLOAT_EQ(reading->z(), -0.5);
 })
 
-TESTP_F(SimBackendTest, OrientationEvents, {
-        /* test some "parallel to coordinate axes" conditions, as well as some
-         * ~ 45 degrees angles; we want a hysteresis there, i. e. it should not
-         * flip back and forth when wiggling around the diagonals but only when
-         * it's mostly pointing towards an axis
-         * coordinate system:
-         * http://qt-project.org/doc/qt-5.1/qtsensors/qaccelerometerreading.html
-         */
-    set_data("create accel -500 500 0.1\n"
-             "10 accel 0 9.8 0\n"  // TopUp
-             "100 accel 6.9 6.9 0\n"  // turning left
-             "150 accel 8.1 2.3 0\n"  // almost turned left, should trigger RightUp
-             "50 accel -7.1 6.9 0\n"  // turn right, wiggle around diagonal several times
-             "30 accel -6.5 7.1 0\n" 
-             "30 accel -7.0 6.0 0\n"
-             "30 accel -7.0 6.0 0\n"
-             "30 accel -8.0 3.0 0\n"  // finally turn right enough to trigger LeftUp
-             "30 accel 0 -9.8 0\n"    // TopDown
-             "30 accel 0 0 9.8\n"    // FaceUp
-             "30 accel 0 0 -9.8\n"    // FaceDown
-             );
-
-    orientation_sensor->setIdentifier("core.orientation");
-
-    QObject::connect(orientation_sensor, &QOrientationSensor::readingChanged, [=]() { 
-        auto r = orientation_sensor->reading();
-        orientation_events.push({r->orientation(), chrono::system_clock::now()});
-    });
-
-    EXPECT_EQ(orientation_sensor->start(), true);
-
-    start_time = chrono::system_clock::now();
-    run_events(550);  // must be long enough to catch all events
-
-    EXPECT_EQ(orientation_events.size(), 6);
-
-    check_orientation_event(QOrientationReading::TopUp, 10);
-    check_orientation_event(QOrientationReading::RightUp, 260);
-    check_orientation_event(QOrientationReading::LeftUp, 430);
-    check_orientation_event(QOrientationReading::TopDown, 460);
-    check_orientation_event(QOrientationReading::FaceUp, 490);
-    check_orientation_event(QOrientationReading::FaceDown, 520);
-})
-
 TESTP_F(SimBackendTest, OrientationReading, {
-    set_data("create accel -500 500 0.1\n"
-             "10 accel 0 9.8 0\n"  // TopUp
-             "20 accel 6.9 6.9 0\n"  // turning left
-             "20 accel 8.1 2.3 0\n"  // almost turned left, should trigger RightUp
+    set_data("create accel -500 500 0.001\n"
+             "70 accel 0.347 9.768 0.162\n"
+             "70 accel -0.600 9.947 0.174\n"
+             "70 accel -0.885 11.061 -0.177\n"
+             "70 accel -2.121 10.397 -0.468\n"
+             "70 accel -4.242 8.664 -0.023\n"
+             "70 accel -5.882 7.633 0.169\n"
+             "70 accel -7.031 5.822 -0.268\n"
+             "70 accel -8.138 3.775 0.564\n"
+             "70 accel -9.616 1.854 1.981\n"
+             "70 accel -9.562 -0.195 1.138\n"
+             "70 accel -10.373 -0.597 1.802\n"
              );
+
 
     orientation_sensor->setIdentifier("core.orientation");
 
@@ -304,15 +269,7 @@ TESTP_F(SimBackendTest, OrientationReading, {
     // initial value
     EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::Undefined);
 
-    // TopUp after first event
-    run_events(20);
-    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::TopUp);
-
-    // not changed for "turning left" yet
-    run_events(20);
-    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::TopUp);
-
-    // but changed after "almost turned left"
-    run_events(20);
-    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::RightUp);
+    // Right up after stream of svents
+    run_events(1000);
+    EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::LeftUp);
 })

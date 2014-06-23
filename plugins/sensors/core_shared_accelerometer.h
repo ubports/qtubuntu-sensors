@@ -39,6 +39,7 @@ public:
     qreal getMinValue() const;
     qreal getMaxValue() const;
     qreal getResolution() const;
+    void setDelay(quint32 delay_us);
 
 Q_SIGNALS:
     void accelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
