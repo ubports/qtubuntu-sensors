@@ -30,30 +30,12 @@
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
 
-namespace
-{
-struct Vibrator
-{
-    Vibrator()
-        : file("/sys/class/timed_output/vibrator/enable"),
-          out(&file)
-    {
-        file.open(QFile::WriteOnly | QFile::Text);
-    }
-
-    void operator()(int duration)
-    {
-        (out << duration).flush();
-    }
-
-    QFile file;
-    QTextStream out;
-} vibrator;
-}
-
 core::Feedback::Feedback() : QObject()
 {
     actuatorList << createFeedbackActuator(this, 42);
+
+    m_vibrator = ua_sensors_haptic_new();
+    ua_sensors_haptic_enable(m_vibrator);
 }
 
 QFeedbackInterface::PluginPriority core::Feedback::pluginPriority()
@@ -83,7 +65,7 @@ QVariant core::Feedback::actuatorProperty(const QFeedbackActuator &actuator, Act
 
     switch (prop)
     {
-    case Name: result = QString::fromLocal8Bit("FileBasedNonFinalSoonToBeDeprecatedVibrator"); break;
+    case Name: result = QString::fromLocal8Bit("Ubuntu Vibrator"); break;
     case State: result = actuator.isValid() ? QFeedbackActuator::Ready : QFeedbackActuator::Unknown; break;
     case Enabled: result = true; break;
     }
@@ -122,7 +104,7 @@ void core::Feedback::vibrateOnce(const QFeedbackEffect* effect)
             effectiveDuration = 150;
     }
 
-    vibrator(effectiveDuration);
+    ua_sensors_haptic_vibrate_once(m_vibrator, effectiveDuration);
 }
 
 void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
