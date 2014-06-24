@@ -30,9 +30,13 @@
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
 
-core::Feedback::Feedback() : QObject()
+core::Feedback::Feedback() : QObject(),
+                             m_vibrator(NULL)
 {
     actuatorList << createFeedbackActuator(this, 42);
+
+    if (qgetenv("UBUNTU_PLATFORM_API_BACKEND").isNull())
+        return;
 
     m_vibrator = ua_sensors_haptic_new();
     ua_sensors_haptic_enable(m_vibrator);
@@ -104,7 +108,8 @@ void core::Feedback::vibrateOnce(const QFeedbackEffect* effect)
             effectiveDuration = 150;
     }
 
-    ua_sensors_haptic_vibrate_once(m_vibrator, effectiveDuration);
+    if (m_vibrator)
+        ua_sensors_haptic_vibrate_once(m_vibrator, effectiveDuration);
 }
 
 void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
