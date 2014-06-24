@@ -270,6 +270,6 @@ TESTP_F(SimBackendTest, OrientationReading, {
     EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::Undefined);
 
     // Right up after stream of svents
-    run_events(1000);
+    run_events(1400);
     EXPECT_EQ(orientation_sensor->reading()->orientation(), QOrientationReading::LeftUp);
 })
