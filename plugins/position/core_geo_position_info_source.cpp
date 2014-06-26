@@ -176,6 +176,21 @@ struct core::GeoPositionInfoSource::Private
 
     ~Private()
     {
+        ua_location_service_session_set_position_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_heading_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_velocity_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
         ua_location_service_session_unref(session);
     }
 
