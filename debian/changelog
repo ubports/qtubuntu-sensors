@@ -1,3 +1,10 @@
+qtubuntu-sensors (0.6+14.10.20140624.3-0ubuntu1) utopic; urgency=low
+
+  [ Ricardo Mendoza ]
+  * Migrate to Platform API based vibrator
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 24 Jun 2014 23:20:39 +0000
+
 qtubuntu-sensors (0.6+14.10.20140623.3-0ubuntu1) utopic; urgency=low
 
   [ Ricardo Mendoza ]

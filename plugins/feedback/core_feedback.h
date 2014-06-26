@@ -24,6 +24,8 @@
 
 #include <qfeedbackplugininterfaces.h>
 
+#include <ubuntu/application/sensors/haptic.h>
+
 namespace core
 {
 class Feedback : public QObject, public QFeedbackHapticsInterface
@@ -54,6 +56,8 @@ private:
     QList<QFeedbackActuator*> actuatorList;
 
     void vibrateOnce(const QFeedbackEffect* effect);
+
+    UASensorsHaptic* m_vibrator;
 };
 }
 

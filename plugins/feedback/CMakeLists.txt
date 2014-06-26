@@ -1,5 +1,8 @@
+find_package(PkgConfig)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Feedback REQUIRED)
+
+pkg_check_modules(UBUNTU_PLATFORM_API ubuntu-platform-api REQUIRED)
 
 qt5_add_resources(FEEDBACK_RESOURCES feedback.qrc)
 
@@ -27,7 +30,10 @@ target_link_libraries(
   ${CMAKE_THREAD_LIBS_INIT}
 
   Qt5::Core
-  Qt5::Feedback)
+  Qt5::Feedback
+  
+  ${UBUNTU_PLATFORM_API_LIBRARIES}
+)
 
 install(
   TARGETS qtfeedback_ubuntu
