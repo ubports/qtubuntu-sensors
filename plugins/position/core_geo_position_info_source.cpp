@@ -83,20 +83,37 @@ struct core::GeoPositionInfoSource::Private
             ua_location_position_update_get_longitude_in_degree(position),
             ua_location_position_update_has_altitude(position) ? ua_location_position_update_get_altitude_in_meter(position) : 0);
         
+        QMutexLocker lock(&lastKnownPositionGuard);
+
         lastKnownPosition.setCoordinate(coord);
+
+        if (ua_location_position_update_has_horizontal_accuracy(position))
+            lastKnownPosition.setAttribute(
+                        QGeoPositionInfo::HorizontalAccuracy,
+                        ua_location_position_update_get_horizontal_accuracy_in_meter(position));
+
+        if (ua_location_position_update_has_vertical_accuracy(position))
+            lastKnownPosition.setAttribute(
+                        QGeoPositionInfo::HorizontalAccuracy,
+                        ua_location_position_update_get_vertical_accuracy_in_meter(position));
+
         lastKnownPosition.setTimestamp(
             QDateTime::fromMSecsSinceEpoch(
                 ua_location_position_update_get_timestamp(position)/1000));
+
+        QGeoPositionInfo info{lastKnownPosition};
 
         QMetaObject::invokeMethod(
             parent,
             "positionUpdated",
             Qt::QueuedConnection,
-            Q_ARG(QGeoPositionInfo, lastKnownPosition));        
+            Q_ARG(QGeoPositionInfo, info));
     }
 
     void handleHeadingUpdate(UALocationHeadingUpdate* heading)
     {
+        QMutexLocker lock(&lastKnownPositionGuard);
+
         lastKnownPosition.setAttribute(
             QGeoPositionInfo::Direction,
             ua_location_heading_update_get_heading_in_degree(heading));
@@ -105,15 +122,19 @@ struct core::GeoPositionInfoSource::Private
             QDateTime::fromMSecsSinceEpoch(
                 ua_location_heading_update_get_timestamp(heading)/1000));
 
+        QGeoPositionInfo info{lastKnownPosition};
+
         QMetaObject::invokeMethod(
             parent,
             "positionUpdated",
             Qt::QueuedConnection,
-            Q_ARG(QGeoPositionInfo, lastKnownPosition));
+            Q_ARG(QGeoPositionInfo, info));
     };
 
     void handleVelocityUpdate(UALocationVelocityUpdate* velocity)
     {
+        QMutexLocker lock(&lastKnownPositionGuard);
+
         lastKnownPosition.setAttribute(
             QGeoPositionInfo::GroundSpeed,
             ua_location_velocity_update_get_velocity_in_meters_per_second(velocity));
@@ -122,11 +143,13 @@ struct core::GeoPositionInfoSource::Private
             QDateTime::fromMSecsSinceEpoch(
                 ua_location_velocity_update_get_timestamp(velocity)/1000));
 
+        QGeoPositionInfo info{lastKnownPosition};
+
         QMetaObject::invokeMethod(
             parent,
             "positionUpdated",
             Qt::QueuedConnection,
-            Q_ARG(QGeoPositionInfo, lastKnownPosition));
+            Q_ARG(QGeoPositionInfo, info));
     };
 
     Private(core::GeoPositionInfoSource* parent)
@@ -153,11 +176,27 @@ struct core::GeoPositionInfoSource::Private
 
     ~Private()
     {
+        ua_location_service_session_set_position_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_heading_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_velocity_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
         ua_location_service_session_unref(session);
     }
 
     core::GeoPositionInfoSource* parent;
     UALocationServiceSession* session;
+    QMutex lastKnownPositionGuard;
     QGeoPositionInfo lastKnownPosition;
     QTimer timer;
 };
@@ -166,7 +205,7 @@ core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
         : QGeoPositionInfoSource(parent), d(new Private(this))
 {
     d->timer.setSingleShot(true);
-    QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(updateTimeout()));
+    QObject::connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(updateTimeout()));
 }
 
 core::GeoPositionInfoSource::~GeoPositionInfoSource()
@@ -186,7 +225,8 @@ void core::GeoPositionInfoSource::setPreferredPositioningMethods(PositioningMeth
 QGeoPositionInfo core::GeoPositionInfoSource::lastKnownPosition(bool fromSatellitePositioningMethodsOnly) const
 {
     Q_UNUSED(fromSatellitePositioningMethodsOnly);
-    return d->lastKnownPosition;
+    QMutexLocker lock(&d->lastKnownPositionGuard);
+    return QGeoPositionInfo(d->lastKnownPosition);
 }
 
 QGeoPositionInfoSource::PositioningMethods core::GeoPositionInfoSource::supportedPositioningMethods() const
