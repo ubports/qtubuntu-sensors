@@ -1,3 +1,10 @@
+qtubuntu-sensors (0.6+14.10.20140707-0ubuntu1) utopic; urgency=low
+
+  [ Brendan Donegan ]
+  * Initialize m_last{X,Y,Z} to avoid faulty values (LP: #1337284)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 07 Jul 2014 21:49:14 +0000
+
 qtubuntu-sensors (0.6+14.10.20140630.1-0ubuntu1) utopic; urgency=low
 
   [ thomas-voss ]
