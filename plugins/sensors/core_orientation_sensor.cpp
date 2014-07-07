@@ -42,7 +42,7 @@ const int core::OrientationSensor::m_tiltTolerance[4][2] = {
 };
 
 core::OrientationSensor::OrientationSensor(QSensor *sensor)
-    : QSensorBackend(sensor)
+    : QSensorBackend(sensor), m_lastX(0), m_lastY(0), m_lastZ(0)
 {
     // Register the reading instance with the parent
     setReading<QOrientationReading>(&m_reading);
