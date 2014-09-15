@@ -31,6 +31,23 @@ struct core::GeoPositionInfoSource::Private
 {
     static const unsigned int empty_creation_flags = 0;
     
+    static QGeoPositionInfoSource::Error ua_location_error_to_qt(UALocationServiceError error)
+    {
+        switch (error)
+        {
+        case UA_LOCATION_SERVICE_ERROR_NONE:
+            return QGeoPositionInfoSource::NoError;
+        case UA_LOCATION_SERVICE_ERROR_NO_CONNECTION:
+            return QGeoPositionInfoSource::UnknownSourceError;
+        case UA_LOCATION_SERVICE_ERROR_NO_ACCESS:
+            return QGeoPositionInfoSource::AccessError;
+        case UA_LOCATION_SERVICE_ERROR_GENERIC_ERROR:
+            return QGeoPositionInfoSource::UnknownSourceError;
+        }
+
+        return QGeoPositionInfoSource::UnknownSourceError;
+    }
+
     static void processPositionUpdate(
         UALocationPositionUpdate* position,
         void* context)
@@ -154,9 +171,15 @@ struct core::GeoPositionInfoSource::Private
 
     Private(core::GeoPositionInfoSource* parent)
             : parent(parent),
-              session(ua_location_service_create_session_for_high_accuracy(empty_creation_flags))
+              session(nullptr),
+              error(QGeoPositionInfoSource::NoError)
     {
         qRegisterMetaType<QGeoPositionInfo>("QGeoPositionInfo");
+
+        UALocationServiceError e;
+        session = ua_location_service_try_create_session_for_high_accuracy(empty_creation_flags, &e);
+
+        error = ua_location_error_to_qt(e);
 
         ua_location_service_session_set_position_updates_handler(
             session,
@@ -199,6 +222,7 @@ struct core::GeoPositionInfoSource::Private
     QMutex lastKnownPositionGuard;
     QGeoPositionInfo lastKnownPosition;
     QTimer timer;
+    QGeoPositionInfoSource::Error error;
 };
 
 core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
@@ -206,6 +230,8 @@ core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
 {
     d->timer.setSingleShot(true);
     QObject::connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(updateTimeout()));
+    // Whenever we receive an update, we stop the timeout timer immediately.
+    QObject::connect(this, SIGNAL(positionUpdated(const QGeoPositionInfo&)), &d->timer, SLOT(stop()));
 }
 
 core::GeoPositionInfoSource::~GeoPositionInfoSource()
@@ -265,5 +291,5 @@ void core::GeoPositionInfoSource::requestUpdate(int timeout)
 
 QGeoPositionInfoSource::Error core::GeoPositionInfoSource::error() const
 {
-    return UnknownSourceError;
+    return d->error;
 }
