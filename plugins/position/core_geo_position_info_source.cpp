@@ -29,6 +29,11 @@
 
 struct core::GeoPositionInfoSource::Private
 {
+    // If an application requests an individual position update with a
+    // timeout value of 0, we bump the timeout to the default value of
+    // 10 seconds.
+    static const unsigned int default_timeout_in_ms = 10 * 1000;
+
     static const unsigned int empty_creation_flags = 0;
     
     static QGeoPositionInfoSource::Error ua_location_error_to_qt(UALocationServiceError error)
@@ -284,6 +289,10 @@ void core::GeoPositionInfoSource::requestUpdate(int timeout)
     {
         return;
     }
+
+    // Bump the timeout if caller indicates "choose default value".
+    if (timeout <= 0)
+        timeout = Private::default_timeout_in_ms;
 
     startUpdates();
     d->timer.start(timeout);
