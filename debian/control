@@ -5,7 +5,7 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: debhelper (>= 9),
                cmake,
                libgtest-dev,
-               libubuntu-application-api-dev (>= 2.1.0),
+               libubuntu-application-api-dev (>= 2.3.0),
                libprocess-cpp-dev (>= 0.0.1+14.04.20131212),
                ubuntu-application-api2-test,
                pkg-config,
