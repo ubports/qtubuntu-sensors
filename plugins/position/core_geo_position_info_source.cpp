@@ -279,7 +279,7 @@ void core::GeoPositionInfoSource::Private::handlePositionUpdate(UALocationPositi
 
     if (ua_location_position_update_has_vertical_accuracy(position))
         lastKnownPosition.setAttribute(
-                    QGeoPositionInfo::HorizontalAccuracy,
+                    QGeoPositionInfo::VerticalAccuracy,
                     ua_location_position_update_get_vertical_accuracy_in_meter(position));
 
     lastKnownPosition.setTimestamp(
