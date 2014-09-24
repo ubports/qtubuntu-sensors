@@ -18,6 +18,8 @@
 
 #include "core_geo_position_info_source.h"
 
+#include <cmath>
+
 #include <QtCore>
 
 #include <ubuntu/application/location/service.h>
@@ -273,14 +275,18 @@ void core::GeoPositionInfoSource::Private::handlePositionUpdate(UALocationPositi
     lastKnownPosition.setCoordinate(coord);
 
     if (ua_location_position_update_has_horizontal_accuracy(position))
-        lastKnownPosition.setAttribute(
-                    QGeoPositionInfo::HorizontalAccuracy,
-                    ua_location_position_update_get_horizontal_accuracy_in_meter(position));
+    {
+        double accuracy = ua_location_position_update_get_horizontal_accuracy_in_meter(position);
+        if (!std::isnan(accuracy))
+            lastKnownPosition.setAttribute(QGeoPositionInfo::HorizontalAccuracy, accuracy);
+    }
 
     if (ua_location_position_update_has_vertical_accuracy(position))
-        lastKnownPosition.setAttribute(
-                    QGeoPositionInfo::HorizontalAccuracy,
-                    ua_location_position_update_get_vertical_accuracy_in_meter(position));
+    {
+        double accuracy = ua_location_position_update_get_vertical_accuracy_in_meter(position);
+        if (!std::isnan(accuracy))
+            lastKnownPosition.setAttribute(QGeoPositionInfo::VerticalAccuracy, accuracy);
+    }
 
     lastKnownPosition.setTimestamp(
         QDateTime::fromMSecsSinceEpoch(
