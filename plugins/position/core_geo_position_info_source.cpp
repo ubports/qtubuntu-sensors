@@ -66,6 +66,9 @@ struct core::GeoPositionInfoSource::Private
     // Processes the incoming velocity update and translates it to Qt world.
     void handleVelocityUpdate(UALocationVelocityUpdate* velocity);
 
+    void createLocationServiceSession();
+    void destroyLocationServiceSession();
+
     // Creates a new instance and attempts to connect to the background service.
     // Stores errors in the error member.
     Private(core::GeoPositionInfoSource* parent);
@@ -144,6 +147,10 @@ QGeoPositionInfoSource::PositioningMethods core::GeoPositionInfoSource::supporte
 
 void core::GeoPositionInfoSource::startUpdates()
 {
+    if (d->session == nullptr) {
+        d->createLocationServiceSession();
+    }
+
     // We emit our current error state whenever a caller tries to interact
     // with the source although we are in error state.
     if (error() != QGeoPositionInfoSource::NoError)
@@ -345,15 +352,8 @@ void core::GeoPositionInfoSource::Private::handleVelocityUpdate(UALocationVeloci
         Q_ARG(QGeoPositionInfo, info));
 }
 
-// Creates a new instance and attempts to connect to the background service.
-// Stores errors in the error member.
-core::GeoPositionInfoSource::Private::Private(core::GeoPositionInfoSource* parent)
-    : parent(parent),
-      session(nullptr),
-      error(QGeoPositionInfoSource::NoError)
+void core::GeoPositionInfoSource::Private::createLocationServiceSession()
 {
-    qRegisterMetaType<QGeoPositionInfo>("QGeoPositionInfo");
-
     UALocationServiceError e;
     session = ua_location_service_try_create_session_for_high_accuracy(core::GeoPositionInfoSource::Private::empty_creation_flags, &e);
 
@@ -375,22 +375,40 @@ core::GeoPositionInfoSource::Private::Private(core::GeoPositionInfoSource* paren
         this);
 }
 
+void core::GeoPositionInfoSource::Private::destroyLocationServiceSession()
+{
+    if (session != nullptr) {
+        ua_location_service_session_set_position_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_heading_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_set_velocity_updates_handler(
+            session,
+            nullptr,
+            nullptr);
+
+        ua_location_service_session_unref(session);
+        session = nullptr;
+    }
+}
+
+// Creates a new instance and attempts to connect to the background service.
+// Stores errors in the error member.
+core::GeoPositionInfoSource::Private::Private(core::GeoPositionInfoSource* parent)
+    : parent(parent),
+      session(nullptr),
+      error(QGeoPositionInfoSource::NoError)
+{
+    qRegisterMetaType<QGeoPositionInfo>("QGeoPositionInfo");
+}
+
 core::GeoPositionInfoSource::Private::~Private()
 {
-    ua_location_service_session_set_position_updates_handler(
-        session,
-        nullptr,
-        nullptr);
-
-    ua_location_service_session_set_heading_updates_handler(
-        session,
-        nullptr,
-        nullptr);
-
-    ua_location_service_session_set_velocity_updates_handler(
-        session,
-        nullptr,
-        nullptr);
-
-    ua_location_service_session_unref(session);
+    destroyLocationServiceSession();
 }
