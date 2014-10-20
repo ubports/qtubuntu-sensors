@@ -94,6 +94,8 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     unsigned long then = m_lastFilter;
 
     double timeDelta = (now-then)/1000000;
+    if (timeDelta < 66) return; // If events come faster than 15Hz, drop
+
     float alpha = timeDelta / (200 + timeDelta);
     x = alpha * (x - m_lastX) + m_lastX;
     y = alpha * (y - m_lastY) + m_lastY;
