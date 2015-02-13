@@ -21,6 +21,7 @@
 #include <cmath>
 
 #include <QtCore>
+#include <QCoreApplication>
 
 #include <ubuntu/application/location/service.h>
 #include <ubuntu/application/location/session.h>
@@ -83,13 +84,41 @@ struct core::GeoPositionInfoSource::Private
 };
 
 core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
-        : QGeoPositionInfoSource(parent), d(new Private(this))
+        : QGeoPositionInfoSource(parent),
+          m_applicationActive(true),
+          m_lastReqTimeout(Private::default_timeout_in_ms),
+          d(new Private(this))
 {
     d->timer.setSingleShot(true);
     QObject::connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(updateTimeout()));
     // Whenever we receive an update, we stop the timeout timer immediately.
     QObject::connect(this, SIGNAL(positionUpdated(const QGeoPositionInfo&)), &d->timer, SLOT(stop()));
+    
+    QCoreApplication::instance()->installEventFilter(this);
 }
+
+bool core::GeoPositionInfoSource::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::ApplicationDeactivate) {
+        if (m_applicationActive) {
+            m_applicationActive = false;
+            if (d->timer.isActive()) {
+                m_lastReqTimeout = d->timer.interval();
+                d->timer.stop();
+            }
+            stopUpdates();
+        }
+    }
+    else if (event->type() == QEvent::ApplicationActivate) {
+        if (!m_applicationActive) {
+            m_applicationActive = true;
+            requestUpdate(m_lastReqTimeout);
+        }
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
 
 core::GeoPositionInfoSource::~GeoPositionInfoSource()
 {
