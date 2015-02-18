@@ -21,6 +21,7 @@
 #include <cmath>
 
 #include <QtCore>
+#include <QCoreApplication>
 
 #include <ubuntu/application/location/service.h>
 #include <ubuntu/application/location/session.h>
@@ -83,13 +84,60 @@ struct core::GeoPositionInfoSource::Private
 };
 
 core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
-        : QGeoPositionInfoSource(parent), d(new Private(this))
+        : QGeoPositionInfoSource(parent),
+          m_applicationActive(true),
+          m_lastReqTimeout(-1),
+          m_state(State::stopped),
+          d(new Private(this))
 {
     d->timer.setSingleShot(true);
-    QObject::connect(&d->timer, SIGNAL(timeout()), this, SIGNAL(updateTimeout()));
+    QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeout()), Qt::DirectConnection);
     // Whenever we receive an update, we stop the timeout timer immediately.
     QObject::connect(this, SIGNAL(positionUpdated(const QGeoPositionInfo&)), &d->timer, SLOT(stop()));
+    
+    QCoreApplication::instance()->installEventFilter(this);
 }
+
+bool core::GeoPositionInfoSource::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::ApplicationDeactivate) {
+        if (m_applicationActive) {
+            int state = m_state;
+            stopUpdates();
+
+            m_applicationActive = false;
+            if (state == State::one_shot) {
+                // Save current time out               
+                if (d->timer.isActive()) {
+                    m_lastReqTimeout = d->timer.interval();
+                    d->timer.stop();
+                }
+            }
+            else if (state == State::running) {
+                // Stop continuous updates and suspend
+                m_state = State::suspended;
+            }
+        }
+    }
+    else if (event->type() == QEvent::ApplicationActivate) {
+        if (!m_applicationActive) {
+            m_applicationActive = true;
+
+            // Only restart updates if active before suspending
+            if (m_lastReqTimeout > -1) {
+                requestUpdate(m_lastReqTimeout);
+                m_lastReqTimeout = -1;
+            }
+            else if (m_state == State::suspended) {
+                // Restart continuous updates
+                startUpdates();
+            }
+        }
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
 
 core::GeoPositionInfoSource::~GeoPositionInfoSource()
 {
@@ -162,7 +210,11 @@ void core::GeoPositionInfoSource::startUpdates()
     ua_location_service_session_start_position_updates(d->session);
     ua_location_service_session_start_heading_updates(d->session);
     ua_location_service_session_start_velocity_updates(d->session);
+
+    if (m_state != State::one_shot)
+        m_state = State::running;
 }
+
 
 int core::GeoPositionInfoSource::minimumUpdateInterval() const {
     // We emit our current error state whenever a caller tries to interact
@@ -180,6 +232,8 @@ void core::GeoPositionInfoSource::stopUpdates()
     ua_location_service_session_stop_position_updates(d->session);
     ua_location_service_session_stop_heading_updates(d->session);
     ua_location_service_session_stop_velocity_updates(d->session);
+
+    m_state = State::stopped;
 }
 
 void core::GeoPositionInfoSource::requestUpdate(int timeout)
@@ -203,6 +257,14 @@ void core::GeoPositionInfoSource::requestUpdate(int timeout)
 
     startUpdates();
     d->timer.start(timeout);
+}
+
+void core::GeoPositionInfoSource::timeout()
+{
+    // Update timeout reached, clean up
+    stopUpdates();
+
+    Q_EMIT updateTimeout();
 }
 
 QGeoPositionInfoSource::Error core::GeoPositionInfoSource::error() const
@@ -306,6 +368,12 @@ void core::GeoPositionInfoSource::Private::handlePositionUpdate(UALocationPositi
         "positionUpdated",
         Qt::QueuedConnection,
         Q_ARG(QGeoPositionInfo, info));
+
+    if (timer.isActive())
+        timer.stop();
+
+    if (parent->m_state == State::one_shot)
+        parent->stopUpdates();
 }
 
 // Processes the incoming heading update and translates it to Qt world.
