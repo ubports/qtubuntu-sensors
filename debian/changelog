@@ -1,3 +1,14 @@
+qtubuntu-sensors (0.6+15.04.20150218-0ubuntu1) vivid; urgency=medium
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+  [ Ricardo Mendoza ]
+  * Stop position updates when the application moves to the background.
+    lp #1418033 (LP: #1418033)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 18 Feb 2015 22:42:22 +0000
+
 qtubuntu-sensors (0.6+14.10.20141020~rtm-0ubuntu3) vivid; urgency=medium
 
   * No-change rebuild against Qt 5.4.0.
