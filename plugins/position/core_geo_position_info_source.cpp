@@ -91,7 +91,7 @@ core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
           d(new Private(this))
 {
     d->timer.setSingleShot(true);
-    QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeout()));
+    QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeout()), Qt::DirectConnection);
     // Whenever we receive an update, we stop the timeout timer immediately.
     QObject::connect(this, SIGNAL(positionUpdated(const QGeoPositionInfo&)), &d->timer, SLOT(stop()));
     
@@ -255,7 +255,6 @@ void core::GeoPositionInfoSource::requestUpdate(int timeout)
     if (timeout <= 0)
         timeout = Private::default_timeout_in_ms;
 
-    m_state = State::one_shot;
     startUpdates();
     d->timer.start(timeout);
 }
@@ -369,6 +368,9 @@ void core::GeoPositionInfoSource::Private::handlePositionUpdate(UALocationPositi
         "positionUpdated",
         Qt::QueuedConnection,
         Q_ARG(QGeoPositionInfo, info));
+
+    if (timer.isActive())
+        timer.stop();
 
     if (parent->m_state == State::one_shot)
         parent->stopUpdates();
