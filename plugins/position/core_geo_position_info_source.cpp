@@ -20,8 +20,8 @@
 
 #include <cmath>
 
+#include <QGuiApplication>
 #include <QtCore>
-#include <QCoreApplication>
 
 #include <ubuntu/application/location/service.h>
 #include <ubuntu/application/location/session.h>
@@ -94,13 +94,14 @@ core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
     QObject::connect(&d->timer, SIGNAL(timeout()), this, SLOT(timeout()), Qt::DirectConnection);
     // Whenever we receive an update, we stop the timeout timer immediately.
     QObject::connect(this, SIGNAL(positionUpdated(const QGeoPositionInfo&)), &d->timer, SLOT(stop()));
-    
-    QCoreApplication::instance()->installEventFilter(this);
+    QObject::connect(qApp, SIGNAL(applicationStateChanged(Qt::ApplicationState)), this, SLOT(applicationStateChanged()));
+    qRegisterMetaType<Qt::ApplicationState>("Qt::ApplicationState");
 }
 
-bool core::GeoPositionInfoSource::eventFilter(QObject *obj, QEvent *event)
+void core::GeoPositionInfoSource::applicationStateChanged()
 {
-    if (event->type() == QEvent::ApplicationDeactivate) {
+    Qt::ApplicationState state = qApp->applicationState();
+    if (state == Qt::ApplicationInactive) {
         if (m_applicationActive) {
             int state = m_state;
             stopUpdates();
@@ -119,7 +120,7 @@ bool core::GeoPositionInfoSource::eventFilter(QObject *obj, QEvent *event)
             }
         }
     }
-    else if (event->type() == QEvent::ApplicationActivate) {
+    else if (state == Qt::ApplicationActive) {
         if (!m_applicationActive) {
             m_applicationActive = true;
 
@@ -134,8 +135,6 @@ bool core::GeoPositionInfoSource::eventFilter(QObject *obj, QEvent *event)
             }
         }
     }
-
-    return QObject::eventFilter(obj, event);
 }
 
 
