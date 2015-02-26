@@ -30,8 +30,6 @@ public:
     GeoPositionInfoSource(QObject *parent = 0);
     ~GeoPositionInfoSource();
 
-    bool eventFilter(QObject *obj, QEvent *event);
-
     // From QGeoPositionInfoSource
     void setUpdateInterval(int msec);
     QGeoPositionInfo lastKnownPosition(bool fromSatellitePositioningMethodsOnly = false) const;
@@ -49,6 +47,7 @@ public:
     };
 
 public slots:
+    void applicationStateChanged();
     virtual void startUpdates();
     virtual void stopUpdates();
     virtual void requestUpdate(int timeout = 5000);

@@ -1,6 +1,7 @@
 find_package(PkgConfig)
 
 find_package(Qt5Core REQUIRED)
+find_package(Qt5Gui REQUIRED)
 find_package(Qt5Location REQUIRED)
 
 pkg_check_modules(UBUNTU_PLATFORM_API ubuntu-platform-api REQUIRED)
@@ -26,14 +27,16 @@ set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/plugins/position")
 
 message(STATUS "Installing Qt5 location plugin to: ${PLUGIN_INSTALL_LOCATION}")
 
-qt5_use_modules(qtposition_ubuntu Core Location)
+qt5_use_modules(qtposition_ubuntu Core Gui Location)
+qt5_use_modules(qtposition_ubuntu Gui Location)
 
 target_link_libraries(
   qtposition_ubuntu
 
   ${CMAKE_THREAD_LIBS_INIT}
 
-  Qt5::Core 
+  Qt5::Core
+  Qt5::Gui
   Qt5::Location
 
   ${UBUNTU_PLATFORM_API_LIBRARIES}
