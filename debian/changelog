@@ -1,3 +1,13 @@
+qtubuntu-sensors (0.6+15.10.20150706-0ubuntu1) wily; urgency=medium
+
+  [ Alberto Aguirre ]
+  * Migrate to platform-api 3
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Mon, 06 Jul 2015 18:22:55 +0000
+
 qtubuntu-sensors (0.6+15.04.20150226-0ubuntu1) vivid; urgency=medium
 
   [ CI Train Bot ]
