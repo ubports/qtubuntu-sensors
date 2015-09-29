@@ -42,6 +42,13 @@ core::Feedback::Feedback() : QObject(),
     ua_sensors_haptic_enable(m_vibrator);
 }
 
+core::Feedback::~Feedback()
+{
+    if (m_vibrator) {
+        ua_sensors_haptic_destroy(m_vibrator);
+    }
+}
+
 QFeedbackInterface::PluginPriority core::Feedback::pluginPriority()
 {
     return PluginHighPriority;

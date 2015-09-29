@@ -37,6 +37,7 @@ class Feedback : public QObject, public QFeedbackHapticsInterface
 
 public:
     Feedback();
+    virtual ~Feedback();
 
     // From QFeedbackHapticsInterface
     virtual PluginPriority pluginPriority();
