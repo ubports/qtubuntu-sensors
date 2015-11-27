@@ -1,3 +1,10 @@
+qtubuntu-sensors (0.6+16.04.20151127-0ubuntu1) xenial; urgency=medium
+
+  [ Nick Dedekind ]
+  * Use API for destroying haptic sensor instance. (LP: #1351109)
+
+ -- Gerry Boland <ci-train-bot@canonical.com>  Fri, 27 Nov 2015 19:27:10 +0000
+
 qtubuntu-sensors (0.6+15.10.20150706-0ubuntu2~gcc5.1) wily; urgency=medium
 
   * No-change test rebuild for g++5 ABI transition
