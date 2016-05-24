@@ -23,7 +23,7 @@ Vcs-Bzr: lp:qtubuntu-sensors
 Vcs-Browser: https://code.launchpad.net/qtubuntu-sensors
 
 Package: qtubuntu-sensors
-Architecture: i386 amd64 armhf
+Architecture: i386 amd64 armhf arm64
 Pre-Depends: ${misc:Pre-Depends},
 Multi-Arch: same
 Depends: ${misc:Depends},
