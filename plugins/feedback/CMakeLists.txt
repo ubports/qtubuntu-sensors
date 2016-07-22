@@ -1,8 +1,7 @@
 find_package(PkgConfig)
 find_package(Qt5Core REQUIRED)
+find_package(Qt5DBus REQUIRED)
 find_package(Qt5Feedback REQUIRED)
-
-pkg_check_modules(UBUNTU_PLATFORM_API ubuntu-platform-api REQUIRED)
 
 qt5_add_resources(FEEDBACK_RESOURCES feedback.qrc)
 
@@ -22,7 +21,7 @@ set(PLUGIN_INSTALL_LOCATION "${CMAKE_INSTALL_LIBDIR}/qt5/plugins/feedback")
 
 message(STATUS "Installing Qt5 feedback plugin to: ${PLUGIN_INSTALL_LOCATION}")
 
-qt5_use_modules(qtfeedback_ubuntu Core Feedback)
+qt5_use_modules(qtfeedback_ubuntu Core DBus Feedback)
 
 target_link_libraries(
   qtfeedback_ubuntu
@@ -30,9 +29,8 @@ target_link_libraries(
   ${CMAKE_THREAD_LIBS_INIT}
 
   Qt5::Core
+  Qt5::DBus
   Qt5::Feedback
-  
-  ${UBUNTU_PLATFORM_API_LIBRARIES}
 )
 
 install(
