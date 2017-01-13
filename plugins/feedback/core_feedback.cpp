@@ -29,24 +29,20 @@
 #include <QtCore/QTimer>
 #include <QtCore/QProcess>
 #include <QtCore/QFileInfo>
+#include <QDBusInterface>
+#include <QDBusPendingCall>
+#include <QDBusPendingCallWatcher>
+#include <QDBusPendingReply>
 
 core::Feedback::Feedback() : QObject(),
-                             m_vibrator(NULL)
+                             enabled(false),
+                             state(QFeedbackEffect::Stopped)
 {
     actuatorList << createFeedbackActuator(this, 42);
-
-    if (qgetenv("UBUNTU_PLATFORM_API_BACKEND").isNull())
-        return;
-
-    m_vibrator = ua_sensors_haptic_new();
-    ua_sensors_haptic_enable(m_vibrator);
 }
 
 core::Feedback::~Feedback()
 {
-    if (m_vibrator) {
-        ua_sensors_haptic_destroy(m_vibrator);
-    }
 }
 
 QFeedbackInterface::PluginPriority core::Feedback::pluginPriority()
@@ -59,11 +55,12 @@ QList<QFeedbackActuator*> core::Feedback::actuators()
     return actuatorList;
 }
 
-void core::Feedback::setActuatorProperty(const QFeedbackActuator&, ActuatorProperty prop, const QVariant &)
+void core::Feedback::setActuatorProperty(const QFeedbackActuator&, ActuatorProperty prop, const QVariant &value)
 {
     switch (prop)
     {
     case Enabled:
+        enabled = value.toBool();
         break;
     default:
         break;
@@ -78,7 +75,7 @@ QVariant core::Feedback::actuatorProperty(const QFeedbackActuator &actuator, Act
     {
     case Name: result = QString::fromLocal8Bit("Ubuntu Vibrator"); break;
     case State: result = actuator.isValid() ? QFeedbackActuator::Ready : QFeedbackActuator::Unknown; break;
-    case Enabled: result = true; break;
+    case Enabled: result = enabled; break;
     }
 
     return result;
@@ -90,37 +87,88 @@ bool core::Feedback::isActuatorCapabilitySupported(const QFeedbackActuator &, QF
 
     switch(cap)
     {
-    case QFeedbackActuator::Envelope:
-    case QFeedbackActuator::Period: result = true; break;
+    case QFeedbackActuator::Envelope: result = true; break;
+    case QFeedbackActuator::Period: result = false; break;
     }
 
     return result;
 }
 
-void core::Feedback::updateEffectProperty(const QFeedbackHapticsEffect *effect, EffectProperty)
+void core::Feedback::updateEffectProperty(const QFeedbackHapticsEffect *, EffectProperty)
 {
-    if (effect->period() != -1) {
-        /* Not currently supported */
-        reportError(effect, QFeedbackEffect::UnknownError);
-    }
 }
 
-void core::Feedback::vibrateOnce(const QFeedbackEffect* effect)
+void core::Feedback::hapticsVibrateReply(QDBusPendingCallWatcher *watcher, int period, int repeat)
 {
-    int effectiveDuration = effect->duration();
-    switch (effectiveDuration)
-    {
-        case QFeedbackEffect::Infinite:
-        case 0:
-            effectiveDuration = 150;
+    QDBusPendingReply<> reply = *watcher;
+    if (reply.isError()) {
+        qWarning() << "Failed to vibrate with pattern:" << reply.error().message();
+        state = QFeedbackEffect::Stopped;
+    } else {
+        if ((repeat == QFeedbackEffect::Infinite) || (--repeat > 0))
+            QTimer::singleShot(period, [=]() { vibrate(period, repeat); });
+        else
+            state = QFeedbackEffect::Stopped;
     }
 
-    if (m_vibrator)
-        ua_sensors_haptic_vibrate_once(m_vibrator, effectiveDuration);
+    watcher->deleteLater();
+}
+
+void core::Feedback::vibrate(int period, int repeat)
+{
+    if (!(period && repeat))
+        state = QFeedbackEffect::Stopped;
+
+    if (state != QFeedbackEffect::Running) {
+        // Maybe stopped/paused before this async call.
+        return;
+    }
+
+
+    QDBusInterface iface("com.canonical.usensord",
+                         "/com/canonical/usensord/haptic",
+                         "com.canonical.usensord.haptic");
+
+    QDBusPendingCall call = iface.asyncCall("Vibrate", (uint)period);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(call, this);
+    connect(watcher, &QDBusPendingCallWatcher::finished,
+            [=](){ hapticsVibrateReply(watcher, period, repeat); });
+}
+
+void core::Feedback::startVibration(const QFeedbackHapticsEffect *effect)
+{
+    int duration = effect->duration();
+    if (duration == 0)
+        duration = 150;
+
+    int period = effect->period();
+    int repeat;
+    if ((duration == QFeedbackEffect::Infinite) || (duration < 0)) {
+        // If duration is set to QFeedbackEffect::Infinite or a negative
+        // value, we repeat this effect forever until stopped. The
+        // effective period should have been set to a positive value or
+        // 150ms by default.
+        duration = QFeedbackEffect::Infinite;
+        repeat = QFeedbackEffect::Infinite;
+        if (period <= 0)
+            period = 150;
+    } else if (period <= 0) {
+        // If duration is set to a positive value and period is invalid,
+        // then use duration as period.
+        repeat = 1;
+        period = duration;
+    } else {
+        // Otherwise, repeat this effect as many times as the duration
+        // may cover the effect period.
+        repeat = (duration + period - 1) / period;
+    }
+
+    vibrate(period, repeat);
 }
 
 void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedbackEffect::State state)
 {
+    this->state = state;
     switch (state)
     {
     case QFeedbackEffect::Stopped:
@@ -128,7 +176,7 @@ void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedb
     case QFeedbackEffect::Paused:
         break;
     case QFeedbackEffect::Running:
-        vibrateOnce(effect);
+        QTimer::singleShot(0, [=]() { startVibration(effect); });
         break;
     case QFeedbackEffect::Loading:
         break;
@@ -137,7 +185,5 @@ void core::Feedback::setEffectState(const QFeedbackHapticsEffect *effect, QFeedb
 
 QFeedbackEffect::State core::Feedback::effectState(const QFeedbackHapticsEffect *)
 {
-    // We don't currently support on-going vibrations
-    // This can be added when moving to a vibration service
-    return QFeedbackEffect::Stopped;
+    return state;
 }

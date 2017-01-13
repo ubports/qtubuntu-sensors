@@ -24,7 +24,7 @@
 
 #include <qfeedbackplugininterfaces.h>
 
-#include <ubuntu/application/sensors/haptic.h>
+class QDBusPendingCallWatcher;
 
 namespace core
 {
@@ -56,9 +56,12 @@ public:
 private:
     QList<QFeedbackActuator*> actuatorList;
 
-    void vibrateOnce(const QFeedbackEffect* effect);
+    void hapticsVibrateReply(QDBusPendingCallWatcher *watcher, int period, int repeat);
+    void vibrate(int period, int repeat);
+    void startVibration(const QFeedbackHapticsEffect *effect);
 
-    UASensorsHaptic* m_vibrator;
+    bool enabled;
+    QFeedbackEffect::State state;
 };
 }
 
