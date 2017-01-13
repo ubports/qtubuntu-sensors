@@ -202,7 +202,7 @@ TESTP_F(SimBackendTest, AccelerometerEvents, {
     start_time = chrono::system_clock::now();
     run_events(550);
 
-    EXPECT_EQ(accel_events.size(), 3);
+    EXPECT_EQ(accel_events.size(), 3u);
 
     check_accel_event(0.0, -9.9, 0.0, 10);
     check_accel_event(1.5, 400, 0.5, 210);
