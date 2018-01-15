@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.7+ubports) xenial; urgency=medium
+
+  * Imported to UBports
+
+ -- UBports auto importer <infra@ubports.com>  Mon, 15 Jan 2018 14:34:53 +0100
+
 qtubuntu-sensors (0.6+17.04.20170113-0ubuntu1) zesty; urgency=medium
 
   [ Alfonso Sanchez-Beato, You-Sheng Yang ]
