@@ -1,1 +1,3 @@
 data/Sensors.conf /etc/xdg/QtProject
+usr/lib/*/qt5/plugins/feedback/*
+usr/lib/*/qt5/plugins/sensors/*
