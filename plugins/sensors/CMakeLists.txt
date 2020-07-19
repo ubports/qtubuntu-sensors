@@ -10,14 +10,22 @@ add_library(
   qtubuntu_sensors_plugins SHARED
 
   core_accelerometer.h
+  core_gyroscope.h
+  core_magnetometer.h
   core_orientation_sensor.h
   core_sensor_plugins.h
   core_shared_accelerometer.h
+  core_shared_gyroscope.h
+  core_shared_magnetometer.h
 
   core_accelerometer.cpp
+  core_gyroscope.cpp
+  core_magnetometer.cpp
   core_orientation_sensor.cpp
   core_sensor_plugins.cpp
   core_shared_accelerometer.cpp
+  core_shared_gyroscope.cpp
+  core_shared_magnetometer.cpp
 
   ${SENSORS_RESOURCES}
 )

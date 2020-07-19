@@ -15,6 +15,8 @@
  */
 
 #include "core_accelerometer.h"
+#include "core_gyroscope.h"
+#include "core_magnetometer.h"
 #include "core_orientation_sensor.h"
 #include "core_sensor_plugins.h"
 
@@ -35,6 +37,16 @@ void core::SensorPlugins::registerSensors()
                 QAccelerometer::type,
                 core::Accelerometer::id(),
                 this);
+
+    QSensorManager::registerBackend(
+                QGyroscope::type,
+                core::Gyroscope::id(),
+                this);
+
+    QSensorManager::registerBackend(
+                QMagnetometer::type,
+                core::Magnetometer::id(),
+                this);
 }
 
 // Instantiate all sensor backends here:
@@ -48,6 +60,12 @@ QSensorBackend* core::SensorPlugins::createBackend(QSensor *sensor)
 
     if (sensor->identifier() == core::Accelerometer::id())
         return new core::Accelerometer(sensor);
+
+    if (sensor->identifier() == core::Gyroscope::id())
+        return new core::Gyroscope(sensor);
+
+    if (sensor->identifier() == core::Magnetometer::id())
+        return new core::Magnetometer(sensor);
 
     return NULL;
 }
