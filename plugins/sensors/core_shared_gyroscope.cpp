@@ -36,6 +36,7 @@ core::SharedGyroscope::SharedGyroscope(QObject *parent)
       m_resolution(0.0),
       m_available(false)
 {
+    qWarning() << "SharedGyroscope instance initializing...";
     qRegisterMetaType<QSharedPointer<QGyroscopeReading> >("QSharedPointer<QGyroscopeReading>");
     m_gyroscope = ua_sensors_gyroscope_new();
     if (m_gyroscope == NULL)
@@ -60,6 +61,7 @@ core::SharedGyroscope::SharedGyroscope(QObject *parent)
         m_resolution = value;
 
     m_available = true;
+    qWarning() << "SharedGyroscope instance initialized.";
 
 }
 
@@ -109,6 +111,7 @@ void core::SharedGyroscope::onGyroscopeReadingCb(UASGyroscopeEvent *event, void 
 
 void core::SharedGyroscope::onGyroscopeReading(UASGyroscopeEvent *event)
 {
+    qWarning() << "SharedGyroscope instance new reading.";
     Q_ASSERT(event != NULL);
 
     // TODO(tvoss): We should rely on an object pool to recycle Gyroscope reading
