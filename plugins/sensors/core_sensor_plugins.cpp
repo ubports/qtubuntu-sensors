@@ -18,6 +18,9 @@
 #include "core_gyroscope.h"
 #include "core_magnetometer.h"
 #include "core_orientation_sensor.h"
+#include "core_pressure.h"
+#include "core_temperature.h"
+#include "core_light.h"
 #include "core_sensor_plugins.h"
 
 #include <qsensorplugin.h>
@@ -47,6 +50,21 @@ void core::SensorPlugins::registerSensors()
                 QMagnetometer::type,
                 core::Magnetometer::id(),
                 this);
+
+    QSensorManager::registerBackend(
+                QAmbientTemperatureSensor::type,
+                core::Temperature::id(),
+                this);
+
+    QSensorManager::registerBackend(
+                QLightSensor::type,
+                core::Light::id(),
+                this);
+
+    QSensorManager::registerBackend(
+                QPressureSensor::type,
+                core::Pressure::id(),
+                this);
 }
 
 // Instantiate all sensor backends here:
@@ -66,6 +84,15 @@ QSensorBackend* core::SensorPlugins::createBackend(QSensor *sensor)
 
     if (sensor->identifier() == core::Magnetometer::id())
         return new core::Magnetometer(sensor);
+
+    if (sensor->identifier() == core::Pressure::id())
+        return new core::Pressure(sensor);
+
+    if (sensor->identifier() == core::Light::id())
+        return new core::Light(sensor);
+
+    if (sensor->identifier() == core::Temperature::id())
+        return new core::Temperature(sensor);
 
     return NULL;
 }
