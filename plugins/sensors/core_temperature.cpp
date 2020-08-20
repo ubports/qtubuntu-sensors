@@ -27,7 +27,7 @@ core::Temperature::Temperature(QSensor *sensor)
         &core::SharedTemperature::instance(),
         SIGNAL(temperatureReadingChanged(QSharedPointer<QAmbientTemperatureReading>)),
         this,
-        SLOT(onTemperatureReadingChanged(QSharedPointer<QAmbientTemperatureReading>)),
+        SLOT(onAmbientTemperatureReadingChanged(QSharedPointer<QAmbientTemperatureReading>)),
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Temperature Sensor"));

@@ -58,7 +58,7 @@ core::Compass::Compass(QSensor *sensor)
 
     connect(
         &core::SharedAccelerometer::instance(),
-        SIGNAL(AccelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)),
+        SIGNAL(accelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)),
         this, 
         SLOT(onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading>)),
         Qt::QueuedConnection);
