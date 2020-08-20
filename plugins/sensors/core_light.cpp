@@ -24,7 +24,6 @@
 core::Light::Light(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    qWarning() << "Light instance initializing...";
     // Register the reading instance with the parent
     setReading<QLightReading>(&m_reading);
 
@@ -49,7 +48,6 @@ core::Light::Light(QSensor *sensor)
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Light Sensor"));
-    qWarning() << "Light instance initialized.";
 }
 
 void core::Light::start()
@@ -64,7 +62,6 @@ void core::Light::stop()
 
 void core::Light::onLightReadingChanged(QSharedPointer<QLightReading> reading)
 {
-    qWarning() << "Light instance reading has changed.";
     // Capture the coordinates from the Light device
     m_reading.setLux(reading->lux());
     m_reading.setTimestamp(reading->timestamp());

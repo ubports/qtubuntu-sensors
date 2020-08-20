@@ -22,7 +22,6 @@
 core::Gyroscope::Gyroscope(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    qWarning() << "Gyroscope instance initializing...";
     // Register the reading instance with the parent
     setReading<QGyroscopeReading>(&m_reading);
 
@@ -47,7 +46,6 @@ core::Gyroscope::Gyroscope(QSensor *sensor)
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Gyroscope Sensor"));
-    qWarning() << "Gyroscope instance initialized.";
 }
 
 void core::Gyroscope::start()
@@ -62,7 +60,6 @@ void core::Gyroscope::stop()
 
 void core::Gyroscope::onGyroscopeReadingChanged(QSharedPointer<QGyroscopeReading> reading)
 {
-    qWarning() << "Gyroscope instance reading has changed.";
     // Capture the coordinates from the Gyroscope device
     m_reading.setX(reading->x());
     m_reading.setY(reading->y());

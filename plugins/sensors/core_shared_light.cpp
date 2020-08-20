@@ -38,7 +38,6 @@ core::SharedLight::SharedLight(QObject *parent)
       m_resolution(0.0),
       m_available(false)
 {
-    qWarning() << "SharedLight instance initializing...";
     qRegisterMetaType<QSharedPointer<QLightReading> >("QSharedPointer<QLightReading>");
     m_light = ua_sensors_light_new();
     if (m_light == NULL)
@@ -63,7 +62,6 @@ core::SharedLight::SharedLight(QObject *parent)
         m_resolution = value;
 
     m_available = true;
-    qWarning() << "SharedLight instance initialized.";
 
 }
 
@@ -113,7 +111,6 @@ void core::SharedLight::onLightReadingCb(UASLightEvent *event, void *context)
 
 void core::SharedLight::onLightReading(UASLightEvent *event)
 {
-    qWarning() << "SharedLight instance new reading.";
     Q_ASSERT(event != NULL);
 
     // TODO(tvoss): We should rely on an object pool to recycle Light reading

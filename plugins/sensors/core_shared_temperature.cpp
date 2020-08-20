@@ -38,7 +38,6 @@ core::SharedTemperature::SharedTemperature(QObject *parent)
       m_resolution(0.0),
       m_available(false)
 {
-    qWarning() << "SharedTemperature instance initializing...";
     qRegisterMetaType<QSharedPointer<QAmbientTemperatureReading> >("QSharedPointer<QAmbientTemperatureReading>");
     m_temperature = ua_sensors_temperature_new();
     if (m_temperature == NULL)
@@ -63,7 +62,6 @@ core::SharedTemperature::SharedTemperature(QObject *parent)
         m_resolution = value;
 
     m_available = true;
-    qWarning() << "SharedTemperature instance initialized.";
 
 }
 
@@ -113,7 +111,6 @@ void core::SharedTemperature::onTemperatureReadingCb(UASTemperatureEvent *event,
 
 void core::SharedTemperature::onTemperatureReading(UASTemperatureEvent *event)
 {
-    qWarning() << "SharedTemperature instance new reading.";
     Q_ASSERT(event != NULL);
 
     // TODO(tvoss): We should rely on an object pool to recycle Temperature reading

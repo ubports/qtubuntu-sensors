@@ -38,7 +38,6 @@ core::SharedPressure::SharedPressure(QObject *parent)
       m_resolution(0.0),
       m_available(false)
 {
-    qWarning() << "SharedPressure instance initializing...";
     qRegisterMetaType<QSharedPointer<QPressureReading> >("QSharedPointer<QPressureReading>");
     m_pressure = ua_sensors_pressure_new();
     if (m_pressure == NULL)
@@ -63,7 +62,6 @@ core::SharedPressure::SharedPressure(QObject *parent)
         m_resolution = value;
 
     m_available = true;
-    qWarning() << "SharedPressure instance initialized.";
 
 }
 
@@ -113,7 +111,6 @@ void core::SharedPressure::onPressureReadingCb(UASPressureEvent *event, void *co
 
 void core::SharedPressure::onPressureReading(UASPressureEvent *event)
 {
-    qWarning() << "SharedPressure instance new reading.";
     Q_ASSERT(event != NULL);
 
     // TODO(tvoss): We should rely on an object pool to recycle Pressure reading

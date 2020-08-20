@@ -32,7 +32,6 @@
 core::Compass::Compass(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    qWarning() << "Compass instance initializing...";
     // Register the reading instance with the parent
     setReading<QCompassReading>(&m_reading);
 
@@ -64,7 +63,6 @@ core::Compass::Compass(QSensor *sensor)
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Compass Sensor"));
-    qWarning() << "Compass instance initialized.";
 }
 
 void core::Compass::start()
@@ -98,7 +96,6 @@ void core::Compass::onMagnetometerReadingChanged(QSharedPointer<QMagnetometerRea
 
 void core::Compass::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading)
 {
-    qWarning() << "Compass instance reading has changed.";
 
     // the x/y are switched as compass expects it in aero coordinates
     qreal Gx = reading->y() * .001f; //convert to g

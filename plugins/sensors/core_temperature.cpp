@@ -6,7 +6,6 @@
 core::Temperature::Temperature(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    qWarning() << "Temperature instance initializing...";
     // Register the reading instance with the parent
     setReading<QAmbientTemperatureReading>(&m_reading);
 
@@ -31,7 +30,6 @@ core::Temperature::Temperature(QSensor *sensor)
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Temperature Sensor"));
-    qWarning() << "Temperature instance initialized.";
 }
 
 void core::Temperature::start()
@@ -46,7 +44,6 @@ void core::Temperature::stop()
 
 void core::Temperature::onAmbientTemperatureReadingChanged(QSharedPointer<QAmbientTemperatureReading> reading)
 {
-    qWarning() << "Temperature instance reading has changed.";
     // Capture the coordinates from the Temperature device
     m_reading.setTemperature(reading->temperature());
     m_reading.setTimestamp(reading->timestamp());

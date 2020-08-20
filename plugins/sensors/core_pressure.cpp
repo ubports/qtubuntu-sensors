@@ -24,7 +24,6 @@
 core::Pressure::Pressure(QSensor *sensor)
     : QSensorBackend(sensor)
 {
-    qWarning() << "Pressure instance initializing...";
     // Register the reading instance with the parent
     setReading<QPressureReading>(&m_reading);
 
@@ -49,7 +48,6 @@ core::Pressure::Pressure(QSensor *sensor)
         Qt::QueuedConnection);
 
     setDescription(QLatin1String("Pressure Sensor"));
-    qWarning() << "Pressure instance initialized.";
 }
 
 void core::Pressure::start()
@@ -64,7 +62,6 @@ void core::Pressure::stop()
 
 void core::Pressure::onPressureReadingChanged(QSharedPointer<QPressureReading> reading)
 {
-    qWarning() << "Pressure instance reading has changed.";
     // Capture the coordinates from the Pressure device
     m_reading.setPressure(reading->pressure());
     m_reading.setTimestamp(reading->timestamp());
