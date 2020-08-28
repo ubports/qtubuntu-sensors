@@ -33,3 +33,12 @@ Breaks: libqt5location5-plugins (<< 5.0~git20130805-0ubuntu4)
 Replaces: libqt5location5-plugins (<< 5.0~git20130805-0ubuntu4)
 Description: QtSensors plugins for Android sensors
  QtSensors plugins for the qtubuntu (hybris) sensors backend
+
+Package: qtubuntu-position
+Architecture: i386 amd64 armhf arm64
+Pre-Depends: ${misc:Pre-Depends},
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: Qt Positioning plugin for Android GPS
+ Qt Positioning plugin for the qtubuntu (hybris) backend

@@ -1,3 +1,9 @@
+qtubuntu-sensors (0.7+ubports1) xenial; urgency=medium
+
+  * Put Qt Positioning plugin into a separate subpackage
+
+ -- Nikita Ukhrenkov <thekit@disroot.org>  Sun, 21 Jun 2020 15:02:55 +0200
+
 qtubuntu-sensors (0.7+ubports) xenial; urgency=medium
 
   * Imported to UBports
