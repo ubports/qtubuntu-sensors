@@ -80,9 +80,9 @@ void core::Compass::stop()
 void core::Compass::onMagnetometerReadingChanged(QSharedPointer<QMagnetometerReading> reading)
 {
 
-    magX = reading->y() * .001f;
-    magY = reading->x() * .001f;
-    magZ = reading->z() * .001f;
+    magX = reading->y();
+    magY = reading->x();
+    magZ = reading->z();
     level = (int)reading->calibrationLevel();
 
     magX = oldMagX + FILTER_FACTOR * (magX - oldMagX);
@@ -98,9 +98,9 @@ void core::Compass::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerR
 {
 
     // the x/y are switched as compass expects it in aero coordinates
-    qreal Gx = reading->y() * .001f; //convert to g
-    qreal Gy = reading->x() * .001f;
-    qreal Gz = -reading->z() * .001f;
+    qreal Gx = reading->y();
+    qreal Gy = reading->x();
+    qreal Gz = -reading->z();
 
     qreal divisor = qSqrt(Gx * Gx + Gy * Gy + Gz * Gz);
     qreal normalizedGx = Gx / divisor;
