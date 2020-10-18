@@ -97,7 +97,6 @@ void core::Compass::onMagnetometerReadingChanged(QSharedPointer<QMagnetometerRea
 void core::Compass::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading)
 {
 
-    // the x/y are switched as compass expects it in aero coordinates
     qreal Gx = reading->y();
     qreal Gy = reading->x();
     qreal Gz = -reading->z();
@@ -150,7 +149,7 @@ void core::Compass::onAccelerometerReadingChanged(QSharedPointer<QAccelerometerR
     m_reading.setAzimuth((int)(heading + 360) % 360);
     m_reading.setCalibrationLevel(level);
     m_reading.setTimestamp(reading->timestamp());
-    
+
     oldHeading = heading;
 
     newReadingAvailable();
