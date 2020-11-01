@@ -19,45 +19,68 @@
 #ifndef CORE_COMPASS_H
 #define CORE_COMPASS_H
 
+#include <QObject>
 #include <QCompassReading>
-#include <QMagnetometerReading>
-#include <QAccelerometerReading>
-
+#include <QGyroscopeReading>
+#include <QAccelerometer>
+#include <QMagnetometer>
+#include <QGyroscope>
 #include <qsensorbackend.h>
+
+#define FILTER_COEFFICIENT 0.75f
+#define EPSILON 0.000000001f
+#define NS2S (1.0f / 1000000000.0f)
+#define PI 3.1415926
 
 namespace core
 {
 class Compass : public QSensorBackend
 {
+
     Q_OBJECT
 public:
-    inline static const char* id()
-    {
-        return "core.compass";
-    }
-
+    static char const * const id;
     Compass(QSensor *sensor);
-    virtual ~Compass() = default;
+    ~Compass();
+    void start() Q_DECL_OVERRIDE;
+    void stop() Q_DECL_OVERRIDE;
 
-    void start();
-    void stop();
-
-public Q_SLOTS:
-    void onMagnetometerReadingChanged(QSharedPointer<QMagnetometerReading> reading);
-    void onAccelerometerReadingChanged(QSharedPointer<QAccelerometerReading> reading);
+signals:
+    void sensorError(int);
 
 private:
-    QCompassReading m_reading;
+    QAccelerometer *_gravitySensor;
+    QMagnetometer *_magnetmeter;
+    QGyroscope *_gyroscope;
+    mutable QCompassReading _compassReading;
+    bool _gyroscopeEnabled;
 
-    qreal magX;
-    qreal magY;
-    qreal magZ;
-    qreal oldMagX;
-    qreal oldMagY;
-    qreal oldMagZ;
-    int level;
-    qreal oldHeading;
+    float _gravity[3];
+    float _gyro[3];
+    float _orientation[3]; //alias: accMagOrientation
+    float _geomagnetic[3];
+    float *_gyroMatrix;
+    float _gyroOrientation[3];
+    float _fusedOrientation[3];
+    float _timestamp;
+    bool _initState;
+
+    void checkValues();
+    void calculateFusedOrientation();
+    float *matrixMultiplication(float *A, float *B);
+    float *getRotationMatrixFromOrientation(float *o);
+    void gyroFunction(QGyroscopeReading *event);
+    void getRotationVectorFromGyro(float *gyroValues, float *deltaRotationVector, float timeFactor);
+    static void getRotationMatrixFromVector(float *R, size_t lenR, float *rotationVector, size_t lenRotationVector);
+    static bool getRotationMatrix(float *R, size_t lenR, float *I, size_t lenI, float *gravity, float *geomagnetic);
+    static float *getOrientation(float *R, size_t lenR, float *values);
+
+private slots:
+    void onAccelerometerChanged();
+    void onMagnetometerChanged();
+    void onGyroscopeChanged();
 };
+
 }
 
 #endif // CORE_COMPASS_H
