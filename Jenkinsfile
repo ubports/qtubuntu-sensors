@@ -2,9 +2,14 @@ String stashFileList = '*.gz,*.bz2,*.xz,*.deb,*.ddeb,*.udeb,*.dsc,*.changes,*.bu
 String archiveFileList = '*.gz,*.bz2,*.xz,*.deb,*.ddeb,*.udeb,*.dsc,*.changes,*.buildinfo'
 
 pipeline {
-  agent any
+  agent {
+    node {
+      label 'pipeline-master'
+    }
+  }
   stages {
     stage('Build source') {
+      agent { label 'amd64' }
       steps {
         sh '/usr/bin/build-source.sh'
         stash(name: 'source', includes: stashFileList)
