@@ -102,12 +102,12 @@ core::Compass::Compass(QSensor *sensor)
     }
 }
 
-core::Compass:~Compass()
+core::Compass::~Compass()
 {
     delete[] (_gyroMatrix);
 }
 
-void Compass::onAccelerometerChanged()
+void core::Compass::onAccelerometerChanged()
 {
     QAccelerometerReading *accelerometer = _gravitySensor->reading();
     _gravity[0] = accelerometer->x();
@@ -115,7 +115,7 @@ void Compass::onAccelerometerChanged()
     _gravity[2] = accelerometer->z();
 }
 
-void Compass::onMagnetometerChanged()
+void core::Compass::onMagnetometerChanged()
 {
     QMagnetometerReading *magnetometer = _magnetmeter->reading();
     // returned by Qt in Tesla, we need to convert in microtesla:
@@ -126,12 +126,12 @@ void Compass::onMagnetometerChanged()
     checkValues();
 }
 
-void Compass::onGyroscopeChanged()
+void core::Compass::onGyroscopeChanged()
 {
     gyroFunction(_gyroscope->reading());
 }
 
-void Compass::checkValues()
+void core::Compass::checkValues()
 {
     float R[9] = {0}, I[9] = {0};
 
@@ -152,7 +152,7 @@ void Compass::checkValues()
     }
 }
 
-void Compass::start()
+void core::Compass::start()
 {
     _gravitySensor->setDataRate(sensor()->dataRate());
     _gravitySensor->setAlwaysOn(sensor()->isAlwaysOn());
@@ -170,14 +170,14 @@ void Compass::start()
     if (_gyroscopeEnabled) _gyroscope->start();
 }
 
-void Compass::stop()
+void core::Compass::stop()
 {
     _gravitySensor->stop();
     _magnetmeter->stop();
     if (_gyroscopeEnabled) _gyroscope->stop();
 }
 
-void Compass::gyroFunction(QGyroscopeReading *event)
+void core::Compass::gyroFunction(QGyroscopeReading *event)
 {
     // don't start until first accelerometer/magnetometer orientation has been acquired
     if (_orientation[0] == 0 && _orientation[1] == 0 && _orientation[2] == 0)
@@ -225,7 +225,7 @@ void Compass::gyroFunction(QGyroscopeReading *event)
 }
 
 
-void Compass::calculateFusedOrientation()
+void core::Compass::calculateFusedOrientation()
 {
     static float oneMinusCoeff = 1.0f - FILTER_COEFFICIENT;
     /*
@@ -259,7 +259,7 @@ void Compass::calculateFusedOrientation()
     delete[] (tempGyroMatrix);
 }
 
-void Compass::getRotationMatrixFromVector(float *R, size_t lenR, float *rotationVector, size_t lenRotationVector)
+void core::Compass::getRotationMatrixFromVector(float *R, size_t lenR, float *rotationVector, size_t lenRotationVector)
 {
     float q0;
     float q1 = rotationVector[0];
@@ -312,7 +312,7 @@ void Compass::getRotationMatrixFromVector(float *R, size_t lenR, float *rotation
     }
 }
 // ritorna oggetto nella heap da eliminare
-float * Compass::getRotationMatrixFromOrientation(float *o)
+float * core::Compass::getRotationMatrixFromOrientation(float *o)
 {
     float xM[9] = {0};
     float yM[9] = {0};
@@ -349,7 +349,7 @@ float * Compass::getRotationMatrixFromOrientation(float *o)
 }
 
 // ritorna oggetto nella heap da eliminare
-float * Compass::matrixMultiplication(float *A, float *B)
+float * core::Compass::matrixMultiplication(float *A, float *B)
 {
     float *result = new float[9];
 
@@ -368,7 +368,7 @@ float * Compass::matrixMultiplication(float *A, float *B)
     return result;
 }
 
-bool Compass::getRotationMatrix(float *R, size_t lenR, float *I, size_t lenI, float *gravity, float *geomagnetic)
+bool core::Compass::getRotationMatrix(float *R, size_t lenR, float *I, size_t lenI, float *gravity, float *geomagnetic)
 {
     float Ax = gravity[0];
     float Ay = gravity[1];
@@ -433,7 +433,7 @@ bool Compass::getRotationMatrix(float *R, size_t lenR, float *I, size_t lenI, fl
     return true;
 }
 
-float * Compass::getOrientation(float *R, size_t lenR, float *values)
+float * core::Compass::getOrientation(float *R, size_t lenR, float *values)
 {
     /*
      * 4x4 (length=16) case:
@@ -461,7 +461,7 @@ float * Compass::getOrientation(float *R, size_t lenR, float *values)
     return values;
 }
 
-void Compass::getRotationVectorFromGyro(float *gyroValues, float *deltaRotationVector, float timeFactor)
+void core::Compass::getRotationVectorFromGyro(float *gyroValues, float *deltaRotationVector, float timeFactor)
 {
     float normValues[3] = {0};
 

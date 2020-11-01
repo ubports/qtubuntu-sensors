@@ -55,6 +55,7 @@ build-binary.sh'''
       }
     }
     stage('Results') {
+      agent { label 'amd64' }
       steps {
         cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
         unstash 'build-armhf'
@@ -65,6 +66,7 @@ build-binary.sh'''
       }
     }
     stage('Cleanup') {
+      agent { label 'amd64' }
       steps {
         cleanWs(cleanWhenAborted: true, cleanWhenFailure: true, cleanWhenNotBuilt: true, cleanWhenSuccess: true, cleanWhenUnstable: true, deleteDirs: true)
       }

@@ -39,7 +39,10 @@ class Compass : public QSensorBackend
 
     Q_OBJECT
 public:
-    static char const * const id;
+    inline static const char* id()
+    {
+        return "core.compass";
+    }
     Compass(QSensor *sensor);
     ~Compass();
     void start() Q_DECL_OVERRIDE;
