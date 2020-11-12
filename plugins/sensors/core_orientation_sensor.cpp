@@ -115,7 +115,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
         return;
 
     m_lastOrientation = orientation;
-    
+
     float magnitude = sqrt(x*x + y*y + z*z);
 
     /*
@@ -129,7 +129,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
 
     if (tiltAngle > m_maxTilt)
         return;
-      
+
     if (m_readingCache.orientation() == QOrientationReading::Undefined)
     {
         m_readingCache.setOrientation(QOrientationReading::TopUp);
@@ -138,7 +138,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     else
     {
         nearestRotation = (orientation + 45) / 90;
-        
+
         if (nearestRotation > 3)
             nearestRotation = 0;
 
@@ -176,13 +176,13 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
             else
             {
                 if (orientation > upperBound) {
-                    return;                    
+                    return;
                 }
             }
         }
     }
-   
-    
+
+
     switch (nearestRotation)
     {
     case 0: m_reading.setOrientation(QOrientationReading::TopUp); break;
@@ -190,7 +190,7 @@ void core::OrientationSensor::onAccelerometerReadingChanged(QSharedPointer<QAcce
     case 2: m_reading.setOrientation(QOrientationReading::TopDown); break;
     case 3: m_reading.setOrientation(QOrientationReading::RightUp); break;
     }
-    
+
     if (m_reading.orientation() != m_readingCache.orientation())
     {
         newReadingAvailable();

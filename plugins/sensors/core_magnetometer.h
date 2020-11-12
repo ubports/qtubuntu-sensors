@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical, Ltd.
+ * Copyright (C) 2015 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,31 +14,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CORE_SENSOR_PLUGINS_H
-#define CORE_SENSOR_PLUGINS_H
+#ifndef CORE_MAGNETOMETER_H
+#define CORE_MAGNETOMETER_H
 
-#include <qsensorplugin.h>
+#include <QMagnetometerReading>
+
 #include <qsensorbackend.h>
-#include <qsensormanager.h>
 
 namespace core
 {
-class SensorPlugins
-        : public QObject,
-          public QSensorPluginInterface,
-          public QSensorBackendFactory
+class Magnetometer : public QSensorBackend
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "com.qt-project.Qt.QSensorPluginInterface/1.0" FILE "sensors.json")
-    Q_INTERFACES(QSensorPluginInterface)
-
 public:
-    // From QSensorPluginInterface
-    void registerSensors();
+    inline static const char* id()
+    {
+        return "core.magnetometer";
+    }
 
-    // From QSensorBackendFactory
-    QSensorBackend *createBackend(QSensor *sensor);
+    Magnetometer(QSensor *sensor);
+    virtual ~Magnetometer() = default;
+
+    void start();
+    void stop();
+
+public Q_SLOTS:
+    void onMagnetometerReadingChanged(QSharedPointer<QMagnetometerReading> reading);
+
+private:
+    QMagnetometerReading m_reading;
 };
 }
 
-#endif // CORE_SENSOR_PLUGINS_H
+#endif // CORE_MAGNETOMETER_H
