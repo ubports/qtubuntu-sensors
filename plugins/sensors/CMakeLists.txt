@@ -10,14 +10,36 @@ add_library(
   qtubuntu_sensors_plugins SHARED
 
   core_accelerometer.h
+  core_gyroscope.h
+  core_magnetometer.h
   core_orientation_sensor.h
+  core_pressure.h
+  core_temperature.h
+  core_light.h
   core_sensor_plugins.h
   core_shared_accelerometer.h
+  core_shared_gyroscope.h
+  core_shared_magnetometer.h
+  core_shared_pressure.h
+  core_shared_temperature.h
+  core_shared_light.h
+  core_compass.h
 
   core_accelerometer.cpp
+  core_gyroscope.cpp
+  core_magnetometer.cpp
   core_orientation_sensor.cpp
+  core_pressure.cpp
+  core_temperature.cpp
+  core_light.cpp
   core_sensor_plugins.cpp
   core_shared_accelerometer.cpp
+  core_shared_gyroscope.cpp
+  core_shared_magnetometer.cpp
+  core_shared_pressure.cpp
+  core_shared_temperature.cpp
+  core_shared_light.cpp
+  core_compass.cpp
 
   ${SENSORS_RESOURCES}
 )
@@ -32,11 +54,11 @@ message(STATUS "Installing Qt5 sensors plugin to: ${PLUGIN_INSTALL_LOCATION}")
 qt5_use_modules(qtubuntu_sensors_plugins Core Sensors)
 
 target_link_libraries(
-  qtubuntu_sensors_plugins 
+  qtubuntu_sensors_plugins
 
   ${CMAKE_THREAD_LIBS_INIT}
 
-  Qt5::Core 
+  Qt5::Core
   Qt5::Sensors
 
   ${UBUNTU_PLATFORM_API_LIBRARIES})
