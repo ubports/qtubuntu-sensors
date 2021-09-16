@@ -101,7 +101,7 @@ core::GeoPositionInfoSource::GeoPositionInfoSource(QObject *parent)
 void core::GeoPositionInfoSource::applicationStateChanged()
 {
     Qt::ApplicationState state = qApp->applicationState();
-    if (state != Qt::ApplicationActive) {
+    if (state == Qt::ApplicationSuspended) {
         if (m_applicationActive) {
             int state = m_state;
             stopUpdates();
